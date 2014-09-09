@@ -16,11 +16,20 @@ function AstronInternalRepository(debugLevel) {
 
 AstronInternalRepository.prototype.connect = function(host, port) {
 	if(!port) port = 7198;
-	this.socket = new WebSocket("ws://"+host+port);
-	this.socket.onopen = this.connected;
+	this.socket = new WebSocket("ws://"+host+":"+port);
+	
+	// fixes scope errors with JS
+	
+	var that = this;
+	
+	this.socket.onopen = function(e) {
+		that.connected(e);
+	};
+	
+	console.log("Connecting");
 }
 
-AstronInternalReposiitory.prototype.connected = function(e) {
+AstronInternalRepository.prototype.connected = function(e) {
 	this.isConnected = true;
 	this.log(DebugLevel.INFO, "Connected to Astron");
 }
