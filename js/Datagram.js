@@ -36,6 +36,16 @@ Datagram.prototype.writeUInt64 = function(n) {
 	this.writeUInt32(n.high);
 }
 
+// TODO: think of faster implementation
+// or at least cleaner
+Datagram.prototype.writeString = function(str) {
+	this.writeUInt16(str.length);
+	
+	for(var i = 0; i < str.length; ++i) {
+		this.writeUInt8(str.charCodeAt(i));
+	}
+}
+
 Datagram.prototype.writeInternalHeader = function(recipients, msgtype, sender) {
 	this.writeUInt8(recipients.length);
 	
