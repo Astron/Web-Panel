@@ -36,6 +36,27 @@ Datagram.prototype.writeUInt64 = function(n) {
 	this.writeUInt32(n.high);
 }
 
+Datagram.prototype.writeInternalHeader = function(recipients, msgtype, sender) {
+	this.writeUInt8(recipients.length);
+	
+	for(var i = 0; i < recipients.length; ++i) {
+		this.writeUInt64(recipients[i]);
+	}
+	
+	if(sender != undefined) this.writeUInt64(sender);
+	
+	this.writeUInt16(msgtype);
+}
+
+Datagram.prototype.get_data = function() {
+	var l  = this.bufferIndex - 2;
+	
+	this.buffer[0] = l & 0x00FF;
+	this.buffer[1] = l & 0xFF00;
+	
+	return this.buffer;
+}
+
 // callback is called if the buffer is exhausted but there is more data
 function DatagramIterator(buffer, callback) {
 	this.callback = callback;
@@ -63,6 +84,6 @@ DatagramIterator.prototype.readUInt64 = function() {
 }
 
 function UInt64(low, high) {
-	this.low = low;
-	this.high = high;
+	this.low = low|0;
+	this.high = high|0;
 }
