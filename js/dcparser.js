@@ -1,4 +1,9 @@
-var fs = require('fs');
+function DCParser(dcContents) {
+	this.lines = dcContents.split("\n");
+	for(var i = 0; i < this.lines.length; ++i) {
+		this.readLine();
+	}
+}
 
 var DCFile = [];
 
@@ -237,19 +242,3 @@ function readType(){
             return ["function", name_f, modifiers_f, params_f];
     }
 }
-
-
-module.exports = function(fname) {
-    contents = fs.readFileSync(fname).toString();
-    lines = contents.split('\n');
-
-    var i = lines.length;
-    while(i--){ readLine();}
-
-    // dump
-    (function(){
-        fs.writeFileSync("./DCFile.js", "module.exports.DCFile="+JSON.stringify(DCFile)+";module.exports.fieldLookup="+JSON.stringify(fieldLookup)+";module.exports.reverseFieldLookup="+JSON.stringify(reverseFieldLookup)+";module.exports.classLookup="+JSON.stringify(classLookup)+";module.exports.structLookup="+JSON.stringify(structLookup)+";module.exports.typedefs="+JSON.stringify(typedefs)+";");
-    })();
-};
-
-if(process.argv[2]) module.exports(process.argv[2])
