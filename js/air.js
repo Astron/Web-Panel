@@ -28,6 +28,7 @@ AstronInternalRepository.prototype.connect = function(host, port) {
 	};
 	
 	this.socket.onmessage = function(e) {
+		console.log("Incoming");
 		that.message(new DatagramIterator(new Uint8Array(e.data)));
 	}
 	
@@ -54,6 +55,13 @@ AstronInternalRepository.prototype.send = function(dg) {
 }
 
 // packet serialization utilities
+
+AstronInternalRepository.prototype.subscribeChannel = function(channel) {
+	var dg = new Datagram();
+	dg.writeControlHeader(9000);
+	dg.writeUInt64(channel);
+	this.send(dg);
+}
 
 AstronInternalRepository.prototype.setConName = function(name) {
 	var dg = new Datagram();
