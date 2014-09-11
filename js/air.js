@@ -8,6 +8,10 @@ var DebugLevel = {
 	TRACE: 6
 }
 
+var packets = {
+	STATESERVER_OBJECT_GET_ZONES_COUNT_RESP: 2113
+};
+
 function AstronInternalRepository(debugLevel) {
 	this.isConnected = false;
 	this.socket = null;
@@ -45,6 +49,15 @@ AstronInternalRepository.prototype.connected = function(e) {
 
 AstronInternalRepository.prototype.message = function(dg) {
 	dg.readInternalHeader();
+	
+	if(dg.msgtype == packets.STATESERVER_OBJECT_GET_ZONES_COUNT_RESP) {
+		var context = dg.readUInt32();
+		var object_count = dg.readUInt32();
+		
+		console.log(context);
+		console.log(object_count);
+	}
+	
 	console.log(dg);
 }
 
