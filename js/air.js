@@ -44,6 +44,7 @@ AstronInternalRepository.prototype.connected = function(e) {
 }
 
 AstronInternalRepository.prototype.message = function(dg) {
+	dg.readInternalHeader();
 	console.log(dg);
 }
 
