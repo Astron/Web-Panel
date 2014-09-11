@@ -4,6 +4,8 @@ function DCParser(dcContents) {
 		this.readLine();
 	}
 	
+	this.tempDC = [];
+	
 	this.DCFile = [];
 	this.classLookup = {};
 	this.structLookup = {};
@@ -47,8 +49,6 @@ DCParser.prototype.readUpToEither = function(dels){
     return [temp, del];
 }
 
-var tempDC = [];
-
 DCParser.prototype.readLine = function(){
     this.lindex++;
     this.index = 0;
@@ -58,7 +58,7 @@ DCParser.prototype.readLine = function(){
         return;
     } else if(this.line[0] == '}'){
         this.outside = false;
-        this.DCFile.push(tempDC);
+        this.DCFile.push(this.tempDC);
         return;
     }
     
@@ -86,7 +86,7 @@ DCParser.prototype.readLine = function(){
             case 'struct':
                 var structName = readUpTo(" ");
                 this.outside = true;
-                tempDC = ["struct", structName, []];
+                this.tempDC = ["struct", structName, []];
                 this.structLookup[structName] = this.DCFile.length;
                 break;
             case 'dclass':
@@ -119,7 +119,7 @@ DCParser.prototype.readLine = function(){
                 }
                 
                 this.outside = true;
-                tempDC = ["dclass", className, inherited];
+                this.tempDC = ["dclass", className, inherited];
                 
                 this.classLookup[className] = this.DCFile.length;
                 break;
@@ -127,7 +127,7 @@ DCParser.prototype.readLine = function(){
     } else {
         this.index += 2; // two whitespace.. idk why
         
-        tempDC[2].push(readType());
+        this.tempDC[2].push(readType());
     }
 }
 
@@ -154,16 +154,16 @@ DCParser.prototype.readType = function(){
                 
                 var i = 0;
                 while(i < components.length){                    
-                    var j = searchDC(tempDC, components[i++]);
+                    var j = searchDC(this.tempDC, components[i++]);
                     if(j == -1){
                         console.log("ERROR: nonexistant component "+components[i-1]);
                     }
-                    modifiers_m = tempDC[2][j][2];
-                    params_m = params_m.concat(tempDC[2][j][3])
+                    modifiers_m = this.tempDC[2][j][2];
+                    params_m = params_m.concat(this.tempDC[2][j][3])
                 }
                 modifiers_m.push["morph"];
-                this.reverseFieldLookup[tempDC[1]+"::"+name_m] = this.fieldLookup.length;
-                this.fieldLookup.push([tempDC[1], "function", name_m, modifiers_m, params_m, components]);
+                this.reverseFieldLookup[this.tempDC[1]+"::"+name_m] = this.fieldLookup.length;
+                this.fieldLookup.push([this.tempDC[1], "function", name_m, modifiers_m, params_m, components]);
                 return ["function", name_m, modifiers_m, params_m, components];
                 
                 break;
@@ -186,8 +186,8 @@ DCParser.prototype.readType = function(){
                 type_v += "[]";
             }
             
-            this.reverseFieldLookup[tempDC[1]+"::"+name_v] = this.fieldLookup.length;
-            this.fieldLookup.push([tempDC[1], type_v, name_v, modifiers_v]);
+            this.reverseFieldLookup[this.tempDC[1]+"::"+name_v] = this.fieldLookup.length;
+            this.fieldLookup.push([this.tempDC[1], type_v, name_v, modifiers_v]);
             return [type_v, name_v, modifiers_v];
         case '(': // function
             var name_f = res[0];
@@ -231,8 +231,8 @@ DCParser.prototype.readType = function(){
                 }
             }
             
-            this.reverseFieldLookup[tempDC[1]+"::"+name_f] = this.fieldLookup.length;
-            this.fieldLookup.push([tempDC[1], "function", name_f, modifiers_f, params_f]);
+            this.reverseFieldLookup[this.tempDC[1]+"::"+name_f] = this.fieldLookup.length;
+            this.fieldLookup.push([this.tempDC[1], "function", name_f, modifiers_f, params_f]);
             return ["function", name_f, modifiers_f, params_f];
     }
 }
