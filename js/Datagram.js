@@ -32,8 +32,16 @@ Datagram.prototype.writeUInt32 = function(n) {
 }
 
 Datagram.prototype.writeUInt64 = function(n) {
-	this.writeUInt32(n.low);
-	this.writeUInt32(n.high);
+	if(typeof n == "number") {
+		// this is a normal JavaScript number (32-bit integer that is)
+		// no need to implicitly conveert to a UInt64 type
+		
+		this.writeUInt32(n & 0x0000FFFF);
+		this.writeUInt32(0);
+	} else {
+		this.writeUInt32(n.low);
+		this.writeUInt32(n.high);
+	}
 }
 
 // TODO: think of faster implementation
@@ -59,7 +67,7 @@ Datagram.prototype.writeInternalHeader = function(recipients, msgtype, sender) {
 }
 
 Datagram.prototype.writeControlHeader = function(msgtype) {
-	this.writeInternalHeader([new UInt64(1)], msgtype);
+	this.writeInternalHeader([1], msgtype);
 }
 
 Datagram.prototype.get_data = function() {
