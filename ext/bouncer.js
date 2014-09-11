@@ -6,7 +6,7 @@
 var net = require('net');
 var ws = require('ws');
 
-var astron = net.connect({port: 7198},
+var astron = net.connect({port: 7199},
 	function() {
 		console.log("Connection to Astron established");
 	});
@@ -26,5 +26,6 @@ wss.on('connection', function(ws) {
 });	
 	
 astron.on('data', function(d) {
-	ws.send(d, {binary: true, mask: true});
+	console.log("Data from Astron! Passing");
+	browser.send(d, {binary: true});
 })
