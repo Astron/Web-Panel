@@ -109,3 +109,8 @@ function UInt64(low, high) {
 	this.low = low|0;
 	this.high = high|0;
 }
+
+// this method allows us to type new UInt64(1234, 5678).equals(new UInt64(1234, 5678)) [return true]
+UInt64.prototype.equals = function(other) {
+	return (this.low == other.low) && (this.high == other.high);
+}
