@@ -38,6 +38,9 @@ AstronInternalRepository.prototype.connect = function(host, port) {
 AstronInternalRepository.prototype.connected = function(e) {
 	this.isConnected = true;
 	this.log(DebugLevel.INFO, "Connected to Astron");
+	this.airId = 1337;
+	
+	this.subscribeChannel(1337);
 }
 
 AstronInternalRepository.prototype.message = function(dg) {
@@ -67,5 +70,23 @@ AstronInternalRepository.prototype.setConName = function(name) {
 	var dg = new Datagram();
 	dg.writeControlHeader(9012);
 	dg.writeString(name);
+	this.send(dg);
+}
+
+AstronInternalRepository.prototype.getZonesObjects = function(context, t_parent, zones) {
+	for(var z = 0; z < zones.length; ++z) {
+		this.subscribeChannel(zones[z]);
+	}
+	
+	var dg = new Datagram();
+	dg.writeInternalHeader([t_parent], 2102, this.airId);
+	dg.writeUInt32(context);
+	dg.writeUInt32(t_parent);
+	dg.writeUInt16(zones.length);
+	
+	for(var i = 0; i < zones.length; ++i) {
+		dg.writeUInt32(zones[i]);
+	}
+	
 	this.send(dg);
 }
