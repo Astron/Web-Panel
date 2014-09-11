@@ -3,31 +3,22 @@ function DCParser(dcContents) {
 	for(var i = 0; i < this.lines.length; ++i) {
 		this.readLine();
 	}
+	
+	this.DCFile = [];
+	this.classLookup = {};
+	this.structLookup = {};
+	this.fieldLookup = [];
+	this.reverseFieldLookup = {};
+	this.classFields = {};
+	this.typedefs = {};
+	
+	this.index = 0;
+	this.line = "";
+	this.lindex = -1;
+	this.outside = false;
 }
 
-var DCFile = [];
-
-var classLookup = {};
-var structLookup = {};
-var fieldLookup = [];
-
-var reverseFieldLookup = {};
-var classFields = {};
-
-var tempDC = [];
-
-
-var index = 0;
-
-var line = "";
-var lindex = -1;
-
-
-var typedefs = {};
-
-var outside = false;
-
-function searchDC(dc, name){
+DCParser.prototype.searchDC = function(dc, name){
     var i = 0;
     while(i < dc[2].length){
         if(name == dc[2][i][1])
@@ -38,37 +29,40 @@ function searchDC(dc, name){
 }
 
 //reads up to delimeter
-function readUpTo(del){
+DCParser.prototype.readUpTo = function(del){
     if(!del) del = ' ';
     var temp = "";
-    while(line[index] != del) temp += line[index++];
-    index++; // skip del
+    while(this.line[this.index] != del) temp += this.line[this.index++];
+    this.index++; // skip del
     return temp;
 }
-function readUpToEither(dels){
+
+DCParser.prototype.readUpToEither = function(dels){
     var temp = "";
     for(;;) {
-        if(dels.indexOf(line[index]) > -1) break;
-        temp += line[index++];
+        if(dels.indexOf(this.line[this.index]) > -1) break;
+        temp += this.line[this.index++];
     }
-    var del = line[index++];
+    var del = this.line[this.index++];
     return [temp, del];
 }
 
-function readLine(){
-    lindex++;
-    index = 0;
-    line = lines[lindex];
+var tempDC = [];
+
+DCParser.prototype.readLine = function(){
+    this.lindex++;
+    this.index = 0;
+    this.line = this.lines[this.lindex];
     
-    if(line.length == 0){
+    if(this.line.length == 0){
         return;
-    } else if(line[0] == '}'){
-        outside = false;
-        DCFile.push(tempDC);
+    } else if(this.line[0] == '}'){
+        this.outside = false;
+        this.DCFile.push(tempDC);
         return;
     }
     
-    if(!outside){
+    if(!this.outside){
         var type = readUpTo(" ");
         switch(type){
             case 'from': // something pythony.. do I care?
@@ -87,57 +81,57 @@ function readLine(){
                     newT = newT[0];
                 }
                 
-                typedefs[newT] = oldT;
+                this.typedefs[newT] = oldT;
                 break;
             case 'struct':
                 var structName = readUpTo(" ");
-                outside = true;
+                this.outside = true;
                 tempDC = ["struct", structName, []];
-                structLookup[structName] = DCFile.length;
+                this.structLookup[structName] = this.DCFile.length;
                 break;
             case 'dclass':
                 var className = readUpTo(" ");
                 
                 var inherited = [];
                 
-                if(line[index] == ':'){
+                if(this.line[this.index] == ':'){
                     // inheritance
-                    index += 2;
+                    this.index += 2;
                     
                     loop_cont: for(;;){
                         var tmp = readUpToEither([",", " "]);
-                        var t_class = DCFile[classLookup[tmp[0]]];
+                        var t_class = this.DCFile[this.classLookup[tmp[0]]];
                         if(!t_class){
                             console.log("NULL TClass "+(JSON.stringify(tmp)));
-                            console.log(line);
+                            console.log(this.line);
                             continue loop_cont; // skip for now
                         }
 
                         var j = 0;
                         while(j < t_class[2].length){
                             inherited.push(t_class[2][j]);
-                            reverseFieldLookup[className+"::"+t_class[2][j][1]] = reverseFieldLookup[tmp[0]+"::"+t_class[2][j][1]]
+                            this.reverseFieldLookup[className+"::"+t_class[2][j][1]] = this.reverseFieldLookup[tmp[0]+"::"+t_class[2][j][1]]
                             ++j;
                         }
-                        index++;
-                        if(tmp[1] == ' ' || line[index] == '{') break;
+                        this.index++;
+                        if(tmp[1] == ' ' || this.line[this.index] == '{') break;
                     }
                 }
                 
-                outside = true;
+                this.outside = true;
                 tempDC = ["dclass", className, inherited];
                 
-                classLookup[className] = DCFile.length;
+                this.classLookup[className] = this.DCFile.length;
                 break;
         }
     } else {
-        index += 2; // two whitespace.. idk why
+        this.index += 2; // two whitespace.. idk why
         
         tempDC[2].push(readType());
     }
 }
 
-function readType(){    
+DCParser.prototype.readType = function(){    
     var res = readUpToEither([" ", "("]);
     
     switch(res[1]){
@@ -151,7 +145,7 @@ function readType(){
                 var components = [];
                 for(;;){
                     var temp = readUpToEither([",",";"]);
-                    index += 1;
+                    this.index += 1;
                     components.push(temp[0]);
                     if(temp[1] == ';') break;
                 }
@@ -168,8 +162,8 @@ function readType(){
                     params_m = params_m.concat(tempDC[2][j][3])
                 }
                 modifiers_m.push["morph"];
-                reverseFieldLookup[tempDC[1]+"::"+name_m] = fieldLookup.length;
-                fieldLookup.push([tempDC[1], "function", name_m, modifiers_m, params_m, components]);
+                this.reverseFieldLookup[tempDC[1]+"::"+name_m] = this.fieldLookup.length;
+                this.fieldLookup.push([tempDC[1], "function", name_m, modifiers_m, params_m, components]);
                 return ["function", name_m, modifiers_m, params_m, components];
                 
                 break;
@@ -192,8 +186,8 @@ function readType(){
                 type_v += "[]";
             }
             
-            reverseFieldLookup[tempDC[1]+"::"+name_v] = fieldLookup.length;
-            fieldLookup.push([tempDC[1], type_v, name_v, modifiers_v]);
+            this.reverseFieldLookup[tempDC[1]+"::"+name_v] = this.fieldLookup.length;
+            this.fieldLookup.push([tempDC[1], type_v, name_v, modifiers_v]);
             return [type_v, name_v, modifiers_v];
         case '(': // function
             var name_f = res[0];
@@ -209,26 +203,26 @@ function readType(){
                 if(param_f[1] == '('){
                     readUpTo(")");
                     
-                    if(line[index+1] == '['){
-                        index += 2;
+                    if(this.line[this.index+1] == '['){
+                        this.index += 2;
                         var ind = readUpTo("]");
                         param_f[0] += " ["+ind+"]";
                     }
                     
                     params_f.push(param_f[0]);
                        
-                    if(line[index++] == ')') break;
+                    if(this.line[this.index++] == ')') break;
                 } else {
                     params_f.push(param_f[0]);
                 
                     if(param_f[1] == ')') break;
-                    index++;
+                    this.index++;
                 }
                 
             }
             
             var modifiers_f = [];
-            if(line[index++] == ' '){
+            if(this.line[this.index++] == ' '){
                 // modifiers
                 for(;;){
                     var tmp_f = readUpToEither([" ", ";"]);
@@ -237,8 +231,8 @@ function readType(){
                 }
             }
             
-            reverseFieldLookup[tempDC[1]+"::"+name_f] = fieldLookup.length;
-            fieldLookup.push([tempDC[1], "function", name_f, modifiers_f, params_f]);
+            this.reverseFieldLookup[tempDC[1]+"::"+name_f] = this.fieldLookup.length;
+            this.fieldLookup.push([tempDC[1], "function", name_f, modifiers_f, params_f]);
             return ["function", name_f, modifiers_f, params_f];
     }
 }
