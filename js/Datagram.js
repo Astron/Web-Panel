@@ -58,6 +58,10 @@ Datagram.prototype.writeInternalHeader = function(recipients, msgtype, sender) {
 	this.writeUInt16(msgtype);
 }
 
+Datagram.prototype.writeControlHeader = function(msgtype) {
+	this.writeInternalHeader([new UInt64(1)], msgtype);
+}
+
 Datagram.prototype.get_data = function() {
 	var l  = this.bufferIndex - 2;
 	
