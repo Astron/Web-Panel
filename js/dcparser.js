@@ -1,8 +1,5 @@
 function DCParser(dcContents) {
 	this.lines = dcContents.split("\n");
-	for(var i = 0; i < this.lines.length; ++i) {
-		this.readLine();
-	}
 	
 	this.tempDC = [];
 	
@@ -18,6 +15,11 @@ function DCParser(dcContents) {
 	this.line = "";
 	this.lindex = -1;
 	this.outside = false;
+	
+	for(var i = 0; i < this.lines.length; ++i) {
+		this.readLine();
+	}
+	
 }
 
 DCParser.prototype.searchDC = function(dc, name){
@@ -52,9 +54,12 @@ DCParser.prototype.readUpToEither = function(dels){
 DCParser.prototype.readLine = function(){
     this.lindex++;
     this.index = 0;
+	console.log(this.lindex);
+	console.log(this.lines);
+	console.log(this.lines[this.lindex]);
     this.line = this.lines[this.lindex];
     
-    if(this.line.length == 0){
+    if(this.line.length == 0 || this.line[0] == "/"){
         return;
     } else if(this.line[0] == '}'){
         this.outside = false;
@@ -63,13 +68,13 @@ DCParser.prototype.readLine = function(){
     }
     
     if(!this.outside){
-        var type = readUpTo(" ");
+        var type = this.readUpTo(" ");
         switch(type){
             case 'from': // something pythony.. do I care?
                 break;
             case 'typedef':
-                var oldT = readUpTo(" ");
-                var newT = readUpTo(";");
+                var oldT = this.readUpTo(" ");
+                var newT = this.readUpTo(";");
                 
                 if(newT[newT.length-1] == ']') {
                     // array clip
@@ -84,13 +89,13 @@ DCParser.prototype.readLine = function(){
                 this.typedefs[newT] = oldT;
                 break;
             case 'struct':
-                var structName = readUpTo(" ");
+                var structName = this.readUpTo(" ");
                 this.outside = true;
                 this.tempDC = ["struct", structName, []];
                 this.structLookup[structName] = this.DCFile.length;
                 break;
             case 'dclass':
-                var className = readUpTo(" ");
+                var className = this.readUpTo(" ");
                 
                 var inherited = [];
                 
@@ -99,7 +104,7 @@ DCParser.prototype.readLine = function(){
                     this.index += 2;
                     
                     loop_cont: for(;;){
-                        var tmp = readUpToEither([",", " "]);
+                        var tmp = this.readUpToEither([",", " "]);
                         var t_class = this.DCFile[this.classLookup[tmp[0]]];
                         if(!t_class){
                             console.log("NULL TClass "+(JSON.stringify(tmp)));
@@ -127,24 +132,24 @@ DCParser.prototype.readLine = function(){
     } else {
         this.index += 2; // two whitespace.. idk why
         
-        this.tempDC[2].push(readType());
+        this.tempDC[2].push(this.readType());
     }
 }
 
 DCParser.prototype.readType = function(){    
-    var res = readUpToEither([" ", "("]);
+    var res = this.readUpToEither([" ", "("]);
     
     switch(res[1]){
         case ' ': // variable of some sort
             var type_v = res[0];
-            var name_v = readUpToEither([" ", ";"]);
+            var name_v = this.readUpToEither([" ", ";"]);
             
             
             if(name_v[0] == ':'){ // morph
                 var name_m = res[0];
                 var components = [];
                 for(;;){
-                    var temp = readUpToEither([",",";"]);
+                    var temp = this.readUpToEither([",",";"]);
                     this.index += 1;
                     components.push(temp[0]);
                     if(temp[1] == ';') break;
@@ -173,7 +178,7 @@ DCParser.prototype.readType = function(){
             if(name_v[1] == ' '){
                 // modifiers
                 for(;;){
-                    var tmp_v = readUpToEither([" ", ";"]);
+                    var tmp_v = this.readUpToEither([" ", ";"]);
                     modifiers_v.push(tmp_v[0]);
                     if(tmp_v[1] == ';') break;
                 }
@@ -196,16 +201,16 @@ DCParser.prototype.readType = function(){
             
             
             for(;;){
-                var param_f = readUpToEither([",","(", ")"]);
+                var param_f = this.readUpToEither([",","(", ")"]);
                 while(param_f[0] == ' '){
                     param_f = param_f.slice(1);
                 }
                 if(param_f[1] == '('){
-                    readUpTo(")");
+                    this.readUpTo(")");
                     
                     if(this.line[this.index+1] == '['){
                         this.index += 2;
-                        var ind = readUpTo("]");
+                        var ind = this.readUpTo("]");
                         param_f[0] += " ["+ind+"]";
                     }
                     
@@ -225,7 +230,7 @@ DCParser.prototype.readType = function(){
             if(this.line[this.index++] == ' '){
                 // modifiers
                 for(;;){
-                    var tmp_f = readUpToEither([" ", ";"]);
+                    var tmp_f = this.readUpToEither([" ", ";"]);
                     modifiers_f.push(tmp_f[0]);
                     if(tmp_f[1] == ';') break;
                 }
