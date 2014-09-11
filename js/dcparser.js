@@ -54,9 +54,6 @@ DCParser.prototype.readUpToEither = function(dels){
 DCParser.prototype.readLine = function(){
     this.lindex++;
     this.index = 0;
-	console.log(this.lindex);
-	console.log(this.lines);
-	console.log(this.lines[this.lindex]);
     this.line = this.lines[this.lindex];
     
     if(this.line.length == 0 || this.line[0] == "/"){
