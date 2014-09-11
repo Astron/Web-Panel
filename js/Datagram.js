@@ -36,7 +36,7 @@ Datagram.prototype.writeUInt64 = function(n) {
 		// this is a normal JavaScript number (32-bit integer that is)
 		// no need to implicitly conveert to a UInt64 type
 		
-		this.writeUInt32(n & 0x0000FFFF);
+		this.writeUInt32(n|0);
 		this.writeUInt32(0);
 	} else {
 		this.writeUInt32(n.low);
@@ -102,7 +102,7 @@ DatagramIterator.prototype.readUInt32 = function() {
 }
 
 DatagramIterator.prototype.readUInt64 = function() {
-	return new UInt64(this.readUInt32(), this.readUInt32() << 32);
+	return new UInt64(this.readUInt32(), this.readUInt32());
 }
 
 function UInt64(low, high) {
