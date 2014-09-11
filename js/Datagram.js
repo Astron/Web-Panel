@@ -28,7 +28,7 @@ Datagram.prototype.writeUInt16 = function(n) {
 
 Datagram.prototype.writeUInt32 = function(n) {
 	this.writeUInt16(n & 0x0000FFFF);
-	this.writeUInt16(n & 0xFFFF0000);
+	this.writeUInt16( (n & 0xFFFF0000) >> 16);
 }
 
 Datagram.prototype.writeUInt64 = function(n) {
