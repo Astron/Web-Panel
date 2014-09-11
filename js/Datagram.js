@@ -86,7 +86,28 @@ function DatagramIterator(buffer, callback) {
 	this.size = (buffer[1] << 8) | buffer[0];
 	
 	this.buffer = buffer;
-	this.bufferIndex = 0;
+	this.bufferIndex = 2;
+	
+	this.isControl = false;
+	this.recipients = [];
+	this.sender = -1;
+	this.msgtype = 0;
+	
+}
+
+DatagramIterator.prototype.readInternalHeader = function() {	
+	var recipient_count = this.readUInt8();
+	for(var i = 0; i < recipient_count; ++i) {
+		this.recipients.push(this.readUInt64());
+	}
+	
+	if(recipient_count == 1 && this.recipients[0].equals(1)) {
+		this.isControl = true;
+	} else {
+		this.sender = this.readUInt64();
+	}
+	
+	this.msgtype = this.readUInt16();
 }
 
 DatagramIterator.prototype.readUInt8 = function() {
@@ -112,5 +133,9 @@ function UInt64(low, high) {
 
 // this method allows us to type new UInt64(1234, 5678).equals(new UInt64(1234, 5678)) [return true]
 UInt64.prototype.equals = function(other) {
+	if(typeof other == "number") {
+		return (this.low == other) && (this.high == 0);
+	}
+	
 	return (this.low == other.low) && (this.high == other.high);
 }
