@@ -23,7 +23,7 @@ Datagram.prototype.writeUInt8 = function(n) {
 
 Datagram.prototype.writeUInt16 = function(n) {
 	this.writeUInt8(n & 0x00FF);
-	this.writeUInt8(n & 0xFF00);
+	this.writeUInt8( (n & 0xFF00) >> 8);
 }
 
 Datagram.prototype.writeUInt32 = function(n) {
@@ -64,7 +64,7 @@ Datagram.prototype.get_data = function() {
 	this.buffer[0] = l & 0x00FF;
 	this.buffer[1] = l & 0xFF00;
 	
-	return this.buffer;
+	return this.buffer.subarray(0, this.bufferIndex); // we don't want to send a 65536 byte packet do we?!
 }
 
 // callback is called if the buffer is exhausted but there is more data
