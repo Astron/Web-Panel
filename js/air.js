@@ -48,3 +48,16 @@ AstronInternalRepository.prototype.log = function(level, message) {
 		console.log(message);
 	}
 }
+
+AstronInternalRepository.prototype.send = function(dg) {
+	this.socket.send(dg.get_data());
+}
+
+// packet serialization utilities
+
+AstronInternalRepository.prototype.setConName = function(name) {
+	var dg = new Datagram();
+	dg.writeControlHeader(9012);
+	dg.writeString(name);
+	this.send(dg);
+}
