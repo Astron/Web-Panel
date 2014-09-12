@@ -238,3 +238,24 @@ DCParser.prototype.readType = function(){
             return ["function", name_f, modifiers_f, params_f];
     }
 }
+
+// using XMLHttpRequest, fetch the DC file by URL
+// then, pass the contents to a new DCParser instance
+// finally, return the DCParser instance
+// callback(bool success, DCParser parser)
+// TODO: look into how the same-origin policy affects this
+
+function fetchDCFile(url, callback) {
+	var request = new XMLHttpRequest();
+	request.onreadystatechange = function() {
+		if(request.readyState == 4) {
+			if(request.status == 200) {
+				// ensure document is fully transferred
+				var parser = new DCParser(request.responseText);
+				callback(true, parser);
+			} else {
+				callback(false, null);
+			}
+		}
+	}
+}
