@@ -1,4 +1,51 @@
 var DCFile = require("./DCFile");
+
+function typeLen(type, value) {
+    if(DCFile.typedefs[type]) type = DCFile.typedefs[type]; // resolve typedefs
+
+
+
+    if((type.indexOf("int") > -1)  && !Array.isArray(value)){
+        var range = type.split('(');
+        type = range[0];
+        var type_p = type.split("%");
+        value *= type_p[0].split("/")[1] ? type_p[0].split("/")[1] : 1;
+        if(type_p[1]) value *= type_p[1].split("/")[1] ? type_p[1].split("/")[1] : 1;  
+        type = type_p[0];
+        type = type.split('/')[0].split('%')[0];
+    }
+
+    type = type.trim();
+	
+	
+	if(type == 'string' || type == 'blob') {
+		return 2 + value.length;
+	} else if(type == 'char' || type == 'uint8' || type == 'int8') {
+		return 1;
+	} else if(type == 'int16' || type == 'uint16') {
+		return 2;
+	} else if(type == 'int32' || type == 'uint32') {
+		return 4;
+	} else if(type == 'int64' || type == 'uint64') {
+		return 8;
+	} else if(DCFile.classLookup[type]) {
+		console.log("How would one determine this type?");
+	} else if(DCFile.structLookup[type]) {
+		var struct = DCFile.DCFile[DCFile.structLookup[type]];
+	
+		var len = 0;
+	
+		for(var i = 0; i < struct[2].length; ++i) {
+			len += typeLen(struct[2][i][0], value[struct[2][i][1]]);
+		}
+		
+		return len;
+	}
+}
+
+module.exports = typeLen;
+
+var DCFile = require("./DCFile");
 var typeLen = require("./typeLen");
 
 function serializeToken(out, type, val){
