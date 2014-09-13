@@ -79,14 +79,7 @@ AstronInternalRepository.prototype.message = function(dg) {
 		console.log(context);
 		console.log(object_count);
 	} else if(dg.msgtype == packets.STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED) {
-		var doId = dg.readUInt32();
-		var location = new Location(dg.readUInt32(), dg.readUInt32());
-				
-		var dclassId = dg.readUInt16();
-		var t_dclass = this.dcFile.DCFile[dclassId];
-		
-		console.log(t_dclass[1]+"("+doId+") at ("+location.parent+","+location.zone+")");
-		
+		this.handleEnterObject(dg, ["broadcast"]);
 	} else {
 		console.log("Unknown packet of msgtype "+dg.msgtype+" received");
 	}
@@ -136,6 +129,20 @@ AstronInternalRepository.prototype.getZonesObjects = function(context, t_parent,
 	}
 	
 	this.send(dg);
+}
+
+// packet handling methods
+
+// TODO: in the future, this needs to handle, e.g.: optionals, owner, etc.
+AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredFields) {
+	var doId = dg.readUInt32();
+	var location = new Location(dg.readUInt32(), dg.readUInt32());
+			
+	var dclassId = dg.readUInt16();
+	var t_dclass = this.dcFile.DCFile[dclassId];
+	
+	console.log(t_dclass[1]+"("+doId+") at ("+location.parent+","+location.zone+")");
+	console.log(t_dclass);
 }
 
 function Location(parent, zone) {
