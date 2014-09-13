@@ -1,5 +1,3 @@
-var DCFile = require("./DCFile");
-
 function typeLen(type, value) {
     if(DCFile.typedefs[type]) type = DCFile.typedefs[type]; // resolve typedefs
 
@@ -42,11 +40,6 @@ function typeLen(type, value) {
 		return len;
 	}
 }
-
-module.exports = typeLen;
-
-var DCFile = require("./DCFile");
-var typeLen = require("./typeLen");
 
 function serializeToken(out, type, val){
     type = type.trim();
@@ -149,11 +142,6 @@ function serializeStruct(out, type, val) {
 		serializeToken( out, struct[2][i][0], val[struct[2][i][1]]);
 	}
 }
-
-module.exports = serializeToken;
-
-var DCFile = require("./DCFile");
-var typeLen = require("./typeLen");
 
 function unserializeToken(in_p, type){
     type = type.trim();
