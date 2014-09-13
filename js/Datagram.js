@@ -155,8 +155,10 @@ function signNetToJS(bits, num) {
 		}
 	} else if(bits == 32) {
 		return num; // FIXME it's already is signed? WAT
-	} else if(bits == 64) {
-		
+	} else {
+		// TODO: figure out how to 64-bit
+		console.log("Cannot sign convert value of "+bits+" bits");
+		return 0;
 	}
 }
 
@@ -170,7 +172,8 @@ function signJSToNet(bits, num) {
 		}
 	} else if(bits == 32) {
 		return num; // FIXME already signed? WAT
-	} else if(bits == 64) {
-		
+	} else {
+		console.log("Cannot sign convert value to network ["+bits+" bits]");
+		return 0;
 	}
 }
