@@ -156,7 +156,13 @@ AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModi
 			}
 		}
 		
-		console.log(fields[i][1]+"("+fields[i][3]+")");
+		var val = [];
+		
+		for(var v = 0; v < fields[i][3].length; ++v) {
+			val.push(unserializeToken(this.dcFile, dg, fields[i][3][v]))
+		}
+		
+		console.log(fields[i][1]+"("+fields[i][3]+") = ("+val+")");
 	}
 	console.log(t_dclass[1]+"("+doId+") at ("+location.parent+","+location.zone+")");
 	console.log(t_dclass);
