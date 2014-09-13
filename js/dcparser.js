@@ -202,6 +202,21 @@ DCParser.prototype.readType = function(){
                 while(param_f[0] == ' '){
                     param_f = param_f.slice(1);
                 }
+				
+				if(param_f[0].indexOf(' ') > -1) {
+					var p = param_f[0].split(" ");
+					
+					var l = p[p.length - 1];
+					
+					if( (l * 1) != l) { 
+						// if it's a number, it's probably just weirdly spaced inline math
+						// if not, we need to strip off the property name
+												
+						param_f[0] = p.slice(0, -1).join(" ");
+					}
+						
+				}
+				
                 if(param_f[1] == '('){
                     this.readUpTo(")");
                     
