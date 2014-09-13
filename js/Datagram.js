@@ -31,6 +31,18 @@ Datagram.prototype.writeUInt32 = function(n) {
 	this.writeUInt16( (n & 0xFFFF0000) >> 16);
 }
 
+Datagram.prototype.writeInt8 = function(n) {
+	this.writeUInt8(signJSToNet(8, n));
+}
+
+Datagram.prototype.writeInt16 = function(n) {
+	this.writeUInt16(signJSToNet(16, n));
+}
+
+Datagram.prototype.writeInt32 = function(n) {
+	this.writeUInt32(signJSToNet(32, n));
+}
+
 Datagram.prototype.writeUInt64 = function(n) {
 	if(typeof n == "number") {
 		// this is a normal JavaScript number (32-bit integer that is)
