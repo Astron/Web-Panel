@@ -1,4 +1,4 @@
-function typeLen(type, value) {
+function typeLen(DCFile, type, value) {
     if(DCFile.typedefs[type]) type = DCFile.typedefs[type]; // resolve typedefs
 
 
@@ -34,14 +34,14 @@ function typeLen(type, value) {
 		var len = 0;
 	
 		for(var i = 0; i < struct[2].length; ++i) {
-			len += typeLen(struct[2][i][0], value[struct[2][i][1]]);
+			len += typeLen(DCFile, struct[2][i][0], value[struct[2][i][1]]);
 		}
 		
 		return len;
 	}
 }
 
-function serializeToken(out, type, val){
+function serializeToken(DCFile, out, type, val){
     type = type.trim();
 
 	
@@ -55,7 +55,7 @@ function serializeToken(out, type, val){
             var len = 0;
 			
 			for(var i = 0; i < val.length; ++i) {
-				len += typeLen(type, val[i])
+				len += typeLen(DCFile, type, val[i])
 			}
 			
             out.writeUInt16(len);
@@ -67,7 +67,7 @@ function serializeToken(out, type, val){
 	            var len = 0;
 			
 				for(var i = 0; i < val.length; ++i) {
-					len += typeLen(type, val[i])
+					len += typeLen(DCFile, type, val[i])
 				}
 			
 	            out.writeUInt16(len);
@@ -126,12 +126,12 @@ function serializeToken(out, type, val){
     else if(type == 'uint32uint8array') out.writeUInt32UInt8Array(val);
     
     else if(DCFile.classLookup[type]) val.serialize(out); // serialize the other class instead ;)
-    else if(DCFile.structLookup[type]) serializeStruct(out, type, val);
+    else if(DCFile.structLookup[type]) serializeStruct(DCFile, out, type, val);
     
     else console.log("UNKOWN TYPE: "+type);
 } 
 
-function serializeStruct(out, type, val) {
+function serializeStruct(DCFile, out, type, val) {
     console.log("SERIALIZE STRUCT");
     console.log(type);
     console.log(val);
@@ -143,7 +143,7 @@ function serializeStruct(out, type, val) {
 	}
 }
 
-function unserializeToken(in_p, type){
+function unserializeToken(DCFile, in_p, type){
     type = type.trim();
     
     //if(type.split(" ").length == 2) type = type.split(" ")[0];
@@ -156,7 +156,7 @@ function unserializeToken(in_p, type){
             var len = in_p.readUInt16();
         } else {
             var tparts = type.split(' ');
-             len = (tparts[1].slice(1, -1)) * typeLen(tparts[0], null); // TODO: bad bad bad bad code
+             len = (tparts[1].slice(1, -1)) * typeLen(DCFile, tparts[0], null); // TODO: bad bad bad bad code
              if(tparts[1].slice(1,-1).indexOf('-') > -1){
                  len = in_p.readUInt16(); // it's range checking failure :p
              }
@@ -219,7 +219,7 @@ function unserializeToken(in_p, type){
     else if(type == 'uint32uint8array') return in_p.readUInt32UInt8Array();
     
    // else if(DCFile.classLookup[type]) val.serialize(out); // serialize the other class instead ;)
-    else if(DCFile.structLookup[type]) return unserializeStruct(in_p, type);
+    else if(DCFile.structLookup[type]) return unserializeStruct(DCFile, in_p, type);
     
     else console.log("UNKOWN TYPE: "+type);
     
@@ -232,7 +232,7 @@ function unserializeToken(in_p, type){
     
 }
 
-function unserializeStruct(in_p, type) {
+function unserializeStruct(DCFile, in_p, type) {
     console.log("DESERIALIZE STRUCT");
     console.log(type);
 	
