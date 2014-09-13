@@ -77,6 +77,8 @@ AstronInternalRepository.prototype.message = function(dg) {
 		
 		console.log(context);
 		console.log(object_count);
+	} else {
+		console.log("Unknown packet of msgtype "+dg.msgtype+" received");
 	}
 	
 	console.log(dg);
