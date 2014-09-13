@@ -126,6 +126,10 @@ DatagramIterator.prototype.readUInt64 = function() {
 	return new UInt64(this.readUInt32(), this.readUInt32());
 }
 
+DatagramIterator.prototype.readInt8 = function() {
+	return signNetToJS(8, this.readUInt8());
+}
+
 function UInt64(low, high) {
 	this.low = low|0;
 	this.high = high|0;
@@ -138,4 +142,35 @@ UInt64.prototype.equals = function(other) {
 	}
 	
 	return (this.low == other.low) && (this.high == other.high);
+}
+
+// utility functions for converting JavaScript integers to their two's complement representation
+function signNetToJS(bits, num) {
+	if(bits == 8 || bits == 16) {
+		// sign extend
+		if(num >= (1 << (bits-1)) {
+			return -( (1 << bits) - n);
+		} else {
+			return num;
+		}
+	} else if(bits == 32) {
+		return num; // FIXME it's already is signed? WAT
+	} else if(bits == 64) {
+		
+	}
+}
+
+function signJSToNet(bits, num) {
+	if(bits == 8 || bits == 16) {
+		// sign extend
+		if(num < 0) {
+			return (1 << bits) + num;
+		} else {
+			return num;
+		}
+	} else if(bits == 32) {
+		return num; // FIXME already signed? WAT
+	} else if(bits == 64) {
+		
+	}
 }
