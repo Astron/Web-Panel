@@ -258,4 +258,6 @@ function fetchDCFile(url, callback) {
 			}
 		}
 	}
+	request.open('GET', url, true);
+	request.send(null);
 }
