@@ -12,13 +12,16 @@ var packets = {
 	STATESERVER_OBJECT_GET_ZONES_COUNT_RESP: 2113
 };
 
-function AstronInternalRepository(debugLevel) {
+function AstronInternalRepository(debugLevel, dcFilePath) {
 	this.isConnected = false;
 	this.socket = null;
 	this.debugLevel = debugLevel || DebugLevel.WARN;
+	
+	this.dcFileLoaded = false;
+	this.dcFile = null;
 }
 
-AstronInternalRepository.prototype.connect = function(host, port) {
+AstronInternalRepository.prototype.connect = function(host, port, dcFile) {
 	if(!port) port = 7198;
 	this.socket = new WebSocket("ws://"+host+":"+port);
 	this.socket.binaryType = "arraybuffer";
@@ -28,7 +31,25 @@ AstronInternalRepository.prototype.connect = function(host, port) {
 	var that = this;
 	
 	this.socket.onopen = function(e) {
-		that.connected(e);
+		// before we can officially declare ourselves connected to the server,
+		// we have to fetch the DC file from the server
+		// TODO: research if this will cause a race condition
+		
+		fetchDCFile(dcFile, function(success, result) {
+			
+			if(success) {
+				that.dcFileLoaded = true;
+				that.dcFile = result;
+				
+				that.connected(e);
+			} else {
+				// something went wrong
+				// most likely a violation of the same-origin policy
+				
+				console.error("DC loading error. Check relevant browser logs for possible same-origin policy violations");
+			}
+			
+		});
 	};
 	
 	this.socket.onmessage = function(e) {
