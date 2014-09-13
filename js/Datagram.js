@@ -148,8 +148,8 @@ UInt64.prototype.equals = function(other) {
 function signNetToJS(bits, num) {
 	if(bits == 8 || bits == 16) {
 		// sign extend
-		if(num >= (1 << (bits-1)) {
-			return -( (1 << bits) - n);
+		if(num >= (1 << (bits-1))) {
+			return -( (1 << bits) - num);
 		} else {
 			return num;
 		}
