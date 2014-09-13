@@ -246,5 +246,3 @@ function unserializeStruct(DCFile, in_p, type) {
 	
 	return s;
 }
-
-module.exports = unserializeToken;
