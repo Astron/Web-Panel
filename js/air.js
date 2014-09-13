@@ -134,13 +134,30 @@ AstronInternalRepository.prototype.getZonesObjects = function(context, t_parent,
 // packet handling methods
 
 // TODO: in the future, this needs to handle, e.g.: optionals, owner, etc.
-AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredFields) {
+AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModifiers) {
+	if(!requiredModifiers) requiredModifiers = [];
+	requiredModifiers.push("required");
+	
 	var doId = dg.readUInt32();
 	var location = new Location(dg.readUInt32(), dg.readUInt32());
 			
 	var dclassId = dg.readUInt16();
 	var t_dclass = this.dcFile.DCFile[dclassId];
 	
+	var fields = t_dclass[2];
+	var values = {};
+	
+	nextField: for(var i = 0; i < fields.length; ++i) {
+		var modifiers = fields[i][2];
+		for(var f = 0; f < requiredModifiers.length; ++f) {
+			if(modifiers.indexOf(requiredModifiers[f]) == -1) {
+				// all modifiers MUST be present
+				continue nextField;
+			}
+		}
+		
+		console.log(fields[i][1]+"("+fields[i][3]+")");
+	}
 	console.log(t_dclass[1]+"("+doId+") at ("+location.parent+","+location.zone+")");
 	console.log(t_dclass);
 }
