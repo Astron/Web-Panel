@@ -1,8 +1,6 @@
 function typeLen(DCFile, type, value) {
     if(DCFile.typedefs[type]) type = DCFile.typedefs[type]; // resolve typedefs
 
-
-
     if((type.indexOf("int") > -1)  && !Array.isArray(value)){
         var range = type.split('(');
         type = range[0];
@@ -44,7 +42,6 @@ function typeLen(DCFile, type, value) {
 function serializeToken(DCFile, out, type, val){
     type = type.trim();
 
-	
     if(type[type.length-1] == ']') { // arrays have there own little implementation
         // array type
         
@@ -82,8 +79,6 @@ function serializeToken(DCFile, out, type, val){
     }
     
     if(DCFile.typedefs[type]) type = DCFile.typedefs[type]; // resolve typedefs
-    
-   
     
     if((type.indexOf("int") > -1)  && !Array.isArray(val)){
         var range = type.split('(');
@@ -128,11 +123,11 @@ function serializeToken(DCFile, out, type, val){
     else if(DCFile.classLookup[type]) val.serialize(out); // serialize the other class instead ;)
     else if(DCFile.structLookup[type]) serializeStruct(DCFile, out, type, val);
     
-    else console.log("UNKOWN TYPE: "+type);
+    else console.log("Error: unknown type "+type+" serialized");
 } 
 
 function serializeStruct(DCFile, out, type, val) {
-    console.log("SERIALIZE STRUCT");
+    console.log("[info] Serializing struct..");
     console.log(type);
     console.log(val);
 	
@@ -145,9 +140,7 @@ function serializeStruct(DCFile, out, type, val) {
 
 function unserializeToken(DCFile, in_p, type){
     type = type.trim();
-    
-    //if(type.split(" ").length == 2) type = type.split(" ")[0];
-    
+        
     if(type[type.length-1] == ']') { // arrays have there own little implementation
         // array type
         var dynArray = type[type.length-2] == '[';
@@ -218,10 +211,9 @@ function unserializeToken(DCFile, in_p, type){
         
     else if(type == 'uint32uint8array') return in_p.readUInt32UInt8Array();
     
-   // else if(DCFile.classLookup[type]) val.serialize(out); // serialize the other class instead ;)
     else if(DCFile.structLookup[type]) return unserializeStruct(DCFile, in_p, type);
     
-    else console.log("UNKOWN TYPE: "+type);
+    else console.log("Error: Unknown type "+type+" unserialized");
     
     if((type.indexOf("int") > -1)){
         t /= type_p[0].split("/")[1] ? type_p[0].split("/")[1] : 1;
@@ -233,7 +225,7 @@ function unserializeToken(DCFile, in_p, type){
 }
 
 function unserializeStruct(DCFile, in_p, type) {
-    console.log("DESERIALIZE STRUCT");
+    console.log("[info] Deserialization Struct");
     console.log(type);
 	
 	var struct = DCFile.DCFile[DCFile.structLookup[type]];
