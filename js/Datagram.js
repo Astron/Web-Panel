@@ -143,11 +143,11 @@ DatagramIterator.prototype.readInt8 = function() {
 }
 
 DatagramIterator.prototype.readInt16 = function() {
-	return signNetToJS(8, this.readUInt16());
+	return signNetToJS(16, this.readUInt16());
 }
 
 DatagramIterator.prototype.readInt32 = function() {
-	return signNetToJS(8, this.readUInt32());
+	return signNetToJS(32, this.readUInt32());
 }
 
 function UInt64(low, high) {
