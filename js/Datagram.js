@@ -156,8 +156,12 @@ DatagramIterator.prototype.readFixedBlob = function(len) {
 	return blob;
 }
 
+DatagramIterator.prototype.readBlob = function() {
+	return this.readFixedBlob(this.readUInt16());
+}
+
 DatagramIterator.prototype.readString = function() {
-	return String.fromCharCode.apply(null, this.readFixedBlob(this.readUInt16()));
+	return String.fromCharCode.apply(null, this.readBlob());
 }
 
 function UInt64(low, high) {
