@@ -94,7 +94,9 @@ AstronInternalRepository.prototype.message = function(dg) {
 		var doId = dg.readUInt32();
 		var parentId = dg.readUInt32();
 		var zone = dg.readUInt32();
-		var dclassId = dg.readUInt32();
+		var dclassId = dg.readUInt16();
+		
+		console.log(dclassId);
 		
 		var properties = this.readProperties(dg, this.dcFile.DCFile[dclassId], [], true);
 		console.log(properties);
