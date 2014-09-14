@@ -240,6 +240,22 @@ AstronInternalRepository.prototype.readProperties = function(dg, t_dclass, requi
 		
 		values[fields[i][1]] = val;
 	}
+	
+	if(optionals) {
+		var num_optinals = dg.readUInt16();
+		
+		for(var i = 0; i < num_optionals; ++i) {
+			var field_id = dg.readUInt16();
+			var field = this.dcFile.fieldLookup[field_id];
+			
+			var vals = [];
+			for(var v = 0; v < field[4].length; ++v) {
+				vals.push(unserializeToken(this.dcFile, dg, field[4][v]));
+			}
+			
+			values[field[2]] = vals;
+		}
+	}
 }
 
 function Location(parent, zone) {
