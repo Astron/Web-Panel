@@ -70,7 +70,7 @@ AstronInternalRepository.prototype.connected = function(e) {
 	this.log(DebugLevel.INFO, "Connected to Astron");
 	this.airId = 1337;
 	
-	this.subscribeChannel(1337);
+	this.subscribeChannel(this.airId);
 	
 	
 }
