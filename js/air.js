@@ -23,6 +23,9 @@ function AstronInternalRepository(debugLevel, dcFilePath) {
 	this.dcFile = null;
 	
 	this.doId2do = {};
+	
+	this.contexts = {};
+	this.contextCounter = 0;
 }
 
 AstronInternalRepository.prototype.connect = function(host, port, dcFile, connectedCallback) {
@@ -101,6 +104,14 @@ AstronInternalRepository.prototype.log = function(level, message) {
 
 AstronInternalRepository.prototype.send = function(dg) {
 	this.socket.send(dg.get_data());
+}
+
+AstronInternalRepository.prototype.nextContext = function() {
+	return this.contextCounter++;
+}
+
+AstronInternalRepository.prototype.rpcContext = function(callback) {
+	this.contexts[this.nextContext()] = callback;
 }
 
 // packet serialization utilities
