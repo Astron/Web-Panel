@@ -124,7 +124,10 @@ AstronInternalRepository.prototype.nextContext = function() {
 }
 
 AstronInternalRepository.prototype.rpcContext = function(callback) {
-	this.contexts[this.nextContext()] = callback;
+	var ctx = this.nextContext();
+	
+	this.contexts[ctx] = callback;
+	return ctx;
 }
 
 AstronInternalRepository.prototype.rpcResponse = function(context, parameters) {
