@@ -150,6 +150,16 @@ DatagramIterator.prototype.readInt32 = function() {
 	return signNetToJS(32, this.readUInt32());
 }
 
+DatagramIterator.prototype.readFixedBlob = function(len) {
+	var blob = this.buffer.subarray(this.bufferIndex, this.bufferIndex + len);
+	this.bufferIndex += len;
+	return blob;
+}
+
+DatagramIterator.prototype.readString = function() {
+	return String.fromCharCode.apply(null, this.readFixedBlob(this.readUInt16()));
+}
+
 function UInt64(low, high) {
 	this.low = low|0;
 	this.high = high|0;
