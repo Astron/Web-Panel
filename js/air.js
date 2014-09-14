@@ -25,7 +25,7 @@ function AstronInternalRepository(debugLevel, dcFilePath) {
 	this.doId2do = {};
 }
 
-AstronInternalRepository.prototype.connect = function(host, port, dcFile) {
+AstronInternalRepository.prototype.connect = function(host, port, dcFile, connectedCallback) {
 	if(!port) port = 7198;
 	this.socket = new WebSocket("ws://"+host+":"+port);
 	this.socket.binaryType = "arraybuffer";
@@ -46,6 +46,7 @@ AstronInternalRepository.prototype.connect = function(host, port, dcFile) {
 				that.dcFile = result;
 				
 				that.connected(e);
+				connectedCallback();
 			} else {
 				// something went wrong
 				// most likely a violation of the same-origin policy
@@ -70,6 +71,8 @@ AstronInternalRepository.prototype.connected = function(e) {
 	this.airId = 1337;
 	
 	this.subscribeChannel(1337);
+	
+	
 }
 
 AstronInternalRepository.prototype.message = function(dg) {
