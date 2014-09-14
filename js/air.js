@@ -12,6 +12,7 @@ var packets = {
 	STATESERVER_OBJECT_SET_FIELD: 2020,
 	STATESERVER_OBJECT_GET_ZONES_COUNT_RESP: 2113,
 	STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED: 2042,
+	STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED_OTHER: 2043,
 	STATESERVER_OBJECT_GET_ALL: 2014,
 	STATESERVER_OBJECT_GET_ALL_RESP: 2015
 };
@@ -103,7 +104,9 @@ AstronInternalRepository.prototype.message = function(dg) {
 		
 		this.rpcResponse(context, []); 
 	} else if(dg.msgtype == packets.STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED) {
-		this.handleEnterObject(dg, ["broadcast"]);
+		this.handleEnterObject(dg, ["broadcast"], false);
+	} else if(dg.msgtype == packets.STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED_OTHER) {
+		this.handleEnterObject(dg, ["broadcast"], true)
 	} else {
 		console.log("Unknown packet of msgtype "+dg.msgtype+" received");
 	}
@@ -198,10 +201,7 @@ AstronInternalRepository.prototype.getFields = function(context, distObj) {
 // packet handling methods
 
 // TODO: in the future, this needs to handle, e.g.: optionals, owner, etc.
-AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModifiers, optionals) {
-	if(!requiredModifiers) requiredModifiers = [];
-	requiredModifiers.push("required");
-	
+AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModifiers, optionals) {	
 	var doId = dg.readUInt32();
 	var location = new Location(dg.readUInt32(), dg.readUInt32());
 			
@@ -226,8 +226,13 @@ AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModi
 }
 
 AstronInternalRepository.prototype.readProperties = function(dg, t_dclass, requiredModifiers, optionals) {
+	if(!requiredModifiers) requiredModifiers = [];
+	requiredModifiers.push("required");
+	
 	var fields = t_dclass[2];
 	var values = {};
+	
+	console.log(fields);
 	
 	nextField: for(var i = 0; i < fields.length; ++i) {
 		var modifiers = fields[i][2];
@@ -249,6 +254,8 @@ AstronInternalRepository.prototype.readProperties = function(dg, t_dclass, requi
 	
 	if(optionals) {
 		var num_optionals = dg.readUInt16();
+		
+		console.log(num_optionals);
 		
 		for(var i = 0; i < num_optionals; ++i) {
 			var field_id = dg.readUInt16();
