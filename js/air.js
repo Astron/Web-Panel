@@ -85,8 +85,8 @@ AstronInternalRepository.prototype.message = function(dg) {
 		var context = dg.readUInt32();
 		var object_count = dg.readUInt32();
 		
-		console.log(context);
-		console.log(object_count);
+		// callback function(object_count)
+		this.rpcResponse(context, [object_count]);
 	} else if(dg.msgtype == packets.STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED) {
 		this.handleEnterObject(dg, ["broadcast"]);
 	} else {
