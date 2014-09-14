@@ -10,8 +10,6 @@ var dgPool = new Uint8Array(MAX_DG_SIZE+1);
 
 function Datagram() {
 	dgPool.set(dgPoolZero); // clear any old data
-							// TODO: optimize. does this really
-							// need to happen for every datagram?
 							
 	this.buffer = dgPool;
 	this.bufferIndex = 2; // reserve room for initial length field which is added on at the end
