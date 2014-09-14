@@ -21,6 +21,8 @@ function AstronInternalRepository(debugLevel, dcFilePath) {
 	
 	this.dcFileLoaded = false;
 	this.dcFile = null;
+	
+	this.doId2do = {};
 }
 
 AstronInternalRepository.prototype.connect = function(host, port, dcFile) {
@@ -183,6 +185,7 @@ AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModi
 	}
 	
 	var distObj = new DistributedObject(t_dclass, doId, location, values);
+	this.doId2do[doId] = distObj;
 	
 	console.log(distObj.dclass[1]+"("+doId+") at ("+distObj.location.parent+","+distObj.location.zone+")");
 	console.log(distObj.properties);
