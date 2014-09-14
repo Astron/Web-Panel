@@ -187,6 +187,14 @@ AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModi
 	var distObj = new DistributedObject(t_dclass, doId, location, values);
 	this.doId2do[doId] = distObj;
 	
+	if(this.doId2do[location.parent]) {
+		if(!this.doId2do[location.parent].zones[location.zone]) {
+			this.doId2do[location.parent].zones[location.zone] = [];
+		}
+		
+		this.doId2do[location.parent].zones[location.zone].push(doId);
+	}
+	
 	console.log(distObj.dclass[1]+"("+doId+") at ("+distObj.location.parent+","+distObj.location.zone+")");
 	console.log(distObj.properties);
 }
