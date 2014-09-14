@@ -246,7 +246,7 @@ AstronInternalRepository.prototype.readProperties = function(dg, t_dclass, requi
 	}
 	
 	if(optionals) {
-		var num_optinals = dg.readUInt16();
+		var num_optionals = dg.readUInt16();
 		
 		for(var i = 0; i < num_optionals; ++i) {
 			var field_id = dg.readUInt16();
