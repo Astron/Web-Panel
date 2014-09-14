@@ -114,6 +114,11 @@ AstronInternalRepository.prototype.rpcContext = function(callback) {
 	this.contexts[this.nextContext()] = callback;
 }
 
+AstronInternalRepository.prototype.rpcResponse = function(context, parameters) {
+	this.contexts[context].apply(null, parameters);
+	this.contexts[context] = null;
+}
+
 // packet serialization utilities
 
 AstronInternalRepository.prototype.subscribeChannel = function(channel) {
