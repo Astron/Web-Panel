@@ -9,6 +9,7 @@ var DebugLevel = {
 }
 
 var packets = {
+	STATESERVER_OBJECT_SET_FIELD: 2020,
 	STATESERVER_OBJECT_GET_ZONES_COUNT_RESP: 2113,
 	STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED: 2042
 };
@@ -131,6 +132,22 @@ AstronInternalRepository.prototype.getZonesObjects = function(context, t_parent,
 	this.send(dg);
 }
 
+AstronInternalRepository.prototype.setField = function(distributedObject, fieldName, value) {
+	var fieldId = this.dcFile.reverseFieldLookup[distributedObject.dclass[1]+"::"+fieldName];
+	var types = this.dcFile.fieldLookup[fieldId][4];
+	
+	var dg = new Datagram();
+	dg.writeInternalHeader([distributedObject.doId], packets.STATESERVER_OBJECT_SET_FIELD, this.airId);
+	dg.writeUInt32(distributedObject.doId);
+	dg.writeUInt16(fieldId);
+	
+	for(var i = 0; i < types.length; ++i) {
+		serializeToken(this.dcFile, dg, types[i], value[i]);
+	}
+	
+	this.send(dg);
+}
+
 // packet handling methods
 
 // TODO: in the future, this needs to handle, e.g.: optionals, owner, etc.
@@ -165,7 +182,7 @@ AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModi
 		values[fields[i][1]] = val;
 	}
 	
-	var distObj = new DistributedObject(t_dclass, location, values);
+	var distObj = new DistributedObject(t_dclass, doId, location, values);
 	
 	console.log(distObj.dclass[1]+"("+doId+") at ("+distObj.location.parent+","+distObj.location.zone+")");
 	console.log(distObj.properties);
@@ -176,8 +193,9 @@ function Location(parent, zone) {
 	this.zone = zone;
 }
 
-function DistributedObject(dclass, location, properties) {
+function DistributedObject(dclass, doId, location, properties) {
 	this.dclass = dclass;
+	this.doId = doId;
 	this.location = location;
 	this.properties = properties || {};
 }
