@@ -162,10 +162,10 @@ AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModi
 			val.push(unserializeToken(this.dcFile, dg, fields[i][3][v]))
 		}
 		
-		console.log(fields[i][1]+"("+fields[i][3]+") = ("+val+")");
+		values[fields[i][1]] = val;
 	}
 	console.log(t_dclass[1]+"("+doId+") at ("+location.parent+","+location.zone+")");
-	console.log(t_dclass);
+	console.log(values);
 }
 
 function Location(parent, zone) {
