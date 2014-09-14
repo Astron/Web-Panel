@@ -192,7 +192,7 @@ AstronInternalRepository.prototype.getFields = function(context, distObj) {
 // packet handling methods
 
 // TODO: in the future, this needs to handle, e.g.: optionals, owner, etc.
-AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModifiers) {
+AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModifiers, optionals) {
 	if(!requiredModifiers) requiredModifiers = [];
 	requiredModifiers.push("required");
 	
@@ -202,6 +202,24 @@ AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModi
 	var dclassId = dg.readUInt16();
 	var t_dclass = this.dcFile.DCFile[dclassId];
 	
+	var values = this.readProperties(dg, t_dclass, requiredModifiers, optionals);
+	
+	var distObj = new DistributedObject(t_dclass, doId, location, values);
+	this.doId2do[doId] = distObj;
+	
+	if(this.doId2do[location.parent]) {
+		if(!this.doId2do[location.parent].zones[location.zone]) {
+			this.doId2do[location.parent].zones[location.zone] = [];
+		}
+		
+		this.doId2do[location.parent].zones[location.zone].push(doId);
+	}
+	
+	console.log(distObj.dclass[1]+"("+doId+") at ("+distObj.location.parent+","+distObj.location.zone+")");
+	console.log(distObj.properties);
+}
+
+AstronInternalRepository.prototype.readProperties = function(dg, t_dclass, requiredModifiers, optionals) {
 	var fields = t_dclass[2];
 	var values = {};
 	
@@ -222,20 +240,6 @@ AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModi
 		
 		values[fields[i][1]] = val;
 	}
-	
-	var distObj = new DistributedObject(t_dclass, doId, location, values);
-	this.doId2do[doId] = distObj;
-	
-	if(this.doId2do[location.parent]) {
-		if(!this.doId2do[location.parent].zones[location.zone]) {
-			this.doId2do[location.parent].zones[location.zone] = [];
-		}
-		
-		this.doId2do[location.parent].zones[location.zone].push(doId);
-	}
-	
-	console.log(distObj.dclass[1]+"("+doId+") at ("+distObj.location.parent+","+distObj.location.zone+")");
-	console.log(distObj.properties);
 }
 
 function Location(parent, zone) {
