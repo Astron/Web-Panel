@@ -66,6 +66,16 @@ Datagram.prototype.writeString = function(str) {
 	}
 }
 
+// TODO: think of a way to reduce code repetition
+
+Datagram.prototype.writeBlob = function(blob) {
+	this.writeUInt16(blob.length);
+	
+	for(var i = 0; i < blob.length; ++i) {
+		this.writeUInt8(blob[i]);
+	}
+}
+
 Datagram.prototype.writeInternalHeader = function(recipients, msgtype, sender) {
 	this.writeUInt8(recipients.length);
 	
