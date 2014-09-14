@@ -201,4 +201,5 @@ function DistributedObject(dclass, doId, location, properties) {
 	this.doId = doId;
 	this.location = location;
 	this.properties = properties || {};
+	this.zones = {};
 }
