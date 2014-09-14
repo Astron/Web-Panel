@@ -89,14 +89,15 @@ AstronInternalRepository.prototype.message = function(dg) {
 		
 		// callback function(object_count)
 		this.rpcResponse(context, [object_count]);
-	} else if(dg.msgtype == STATESERVER_OBJECT_GET_ALL_RESP) {
+	} else if(dg.msgtype == packets.STATESERVER_OBJECT_GET_ALL_RESP) {
 		var context = dg.readUInt32();
 		var doId = dg.readUInt32();
 		var parentId = dg.readUInt32();
 		var zone = dg.readUInt32();
 		var dclassId = dg.readUInt32();
 		
-		// TODO: unserialize properties
+		var properties = this.readProperties(dg, this.dcFile.DCFile[dclassId], [], true);
+		console.log(properties);
 		
 		this.rpcResponse(context, []); 
 	} else if(dg.msgtype == packets.STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED) {
