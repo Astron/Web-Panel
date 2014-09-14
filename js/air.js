@@ -164,11 +164,20 @@ AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModi
 		
 		values[fields[i][1]] = val;
 	}
-	console.log(t_dclass[1]+"("+doId+") at ("+location.parent+","+location.zone+")");
-	console.log(values);
+	
+	var distObj = new DistributedObject(t_dclass, location, values);
+	
+	console.log(distObj.dclass[1]+"("+doId+") at ("+distObj.location.parent+","+distObj.location.zone+")");
+	console.log(distObj.properties);
 }
 
 function Location(parent, zone) {
 	this.parent = parent;
 	this.zone = zone;
+}
+
+function DistributedObject(dclass, location, properties) {
+	this.dclass = dclass;
+	this.location = location;
+	this.properties = properties || {};
 }
