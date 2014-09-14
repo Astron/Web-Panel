@@ -11,7 +11,9 @@ var DebugLevel = {
 var packets = {
 	STATESERVER_OBJECT_SET_FIELD: 2020,
 	STATESERVER_OBJECT_GET_ZONES_COUNT_RESP: 2113,
-	STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED: 2042
+	STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED: 2042,
+	STATESERVER_OBJECT_GET_ALL: 2014,
+	STATESERVER_OBJECT_GET_ALL_RESP: 2015
 };
 
 function AstronInternalRepository(debugLevel, dcFilePath) {
@@ -166,6 +168,14 @@ AstronInternalRepository.prototype.setField = function(distributedObject, fieldN
 		serializeToken(this.dcFile, dg, types[i], value[i]);
 	}
 	
+	this.send(dg);
+}
+
+AstronInternalRepository.prototype.getFields = function(context, distObj) {
+	var dg = new Datagram();
+	dg.writeInternalHeader([distObj.doId], packets.STATESERVER_OBJECT_GET_ALL, this.airId);
+	dg.writeUInt32(context);
+	dg.writeUInt32(distObj.doId);
 	this.send(dg);
 }
 
