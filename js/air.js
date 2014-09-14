@@ -257,6 +257,8 @@ AstronInternalRepository.prototype.readProperties = function(dg, t_dclass, requi
 			values[field[2]] = vals;
 		}
 	}
+	
+	return values;
 }
 
 function Location(parent, zone) {
