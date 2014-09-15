@@ -33,40 +33,42 @@ function AstronInternalRepository(debugLevel, dcFilePath) {
 
 AstronInternalRepository.prototype.connect = function(host, port, dcFile, connectedCallback) {
 	if(!port) port = 7198;
-	this.socket = new WebSocket("ws://"+host+":"+port);
-	this.socket.binaryType = "arraybuffer";
 	
 	// fixes scope errors with JS
 	
 	var that = this;
 	
-	this.socket.onopen = function(e) {
-		// before we can officially declare ourselves connected to the server,
-		// we have to fetch the DC file from the server
-		// TODO: research if this will cause a race condition
+	// in order to prevent a potential race condition,
+	// we fetch the DC file before connecting to the server
+	
+	fetchDCFile(dcFile, function(success, result) {
 		
-		fetchDCFile(dcFile, function(success, result) {
+		if(success) {
+			that.dcFileLoaded = true;
+			that.dcFile = result;
 			
-			if(success) {
-				that.dcFileLoaded = true;
-				that.dcFile = result;
-				
+			that.socket = new WebSocket("ws://"+host+":"+port);
+			that.socket.binaryType = "arraybuffer";
+			
+			that.socket.onopen = function(e) {		
 				that.connected(e);
 				connectedCallback();
-			} else {
-				// something went wrong
-				// most likely a violation of the same-origin policy
-				
-				console.error("DC loading error. Check relevant browser logs for possible same-origin policy violations");
+			};
+	
+			that.socket.onmessage = function(e) {
+				console.log("Incoming");
+				that.message(new DatagramIterator(new Uint8Array(e.data)));
 			}
 			
-		});
-	};
+		} else {
+			// something went wrong
+			// most likely a violation of the same-origin policy
+			
+			console.error("DC loading error. Check relevant browser logs for possible same-origin policy violations");
+		}
+		
+	});
 	
-	this.socket.onmessage = function(e) {
-		console.log("Incoming");
-		that.message(new DatagramIterator(new Uint8Array(e.data)));
-	}
 	
 	console.log("Connecting");
 }
