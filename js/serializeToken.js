@@ -106,20 +106,6 @@ function serializeToken(DCFile, out, type, val){
     else if(type == 'uint32')   out.writeUInt32(val);
     else if(type == 'uint64')   out.writeUInt64(val);
     
-    else if(type == 'uint8array') out.writeUInt8Array(val);
-    else if(type == 'uint16array') out.writeUInt16Array(val);
-    else if(type == 'uint32array') out.writeUInt32Array(val);
-    else if(type == 'int8array') out.writeInt8Array(val);
-    else if(type == 'int16array') out.writeInt16Array(val);
-    else if(type == 'int32array') out.writeInt32Array(val);
-    
-    else if(type == 'int16[2]') {
-        serializeToken(out, "int16", val[0]);
-        serializeToken(out, "int16", val[1]);
-    }
-    
-    else if(type == 'uint32uint8array') out.writeUInt32UInt8Array(val);
-    
     else if(DCFile.classLookup[type]) val.serialize(out); // serialize the other class instead ;)
     else if(DCFile.structLookup[type]) serializeStruct(DCFile, out, type, val);
     
@@ -201,15 +187,6 @@ function unserializeToken(DCFile, in_p, type){
     else if(type == 'uint16')   var t = in_p.readUInt16();
     else if(type == 'uint32')   var t = in_p.readUInt32();
     else if(type == 'uint64')   var t = in_p.readUInt64();
-    
-    else if(type == 'uint8array') return in_p.readUInt8Array();
-    else if(type == 'uint16array') return in_p.readUInt16Array();
-    else if(type == 'uint32array') return in_p.readUInt32Array();
-    else if(type == 'int8array') return in_p.readInt8Array();
-    else if(type == 'int16array') return in_p.readInt16Array();
-    else if(type == 'int32array') return in_p.readInt32Array();
-        
-    else if(type == 'uint32uint8array') return in_p.readUInt32UInt8Array();
     
     else if(DCFile.structLookup[type]) return unserializeStruct(DCFile, in_p, type);
     
