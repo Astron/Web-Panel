@@ -74,6 +74,10 @@ Datagram.prototype.writeBlob = function(blob) {
 	}
 }
 
+Datagram.prototype.writeContext = function(air, func) {
+	this.writeUInt32(air.rpcContext(func));
+}
+
 Datagram.prototype.writeInternalHeader = function(recipients, msgtype, sender) {
 	this.writeUInt8(recipients.length);
 	

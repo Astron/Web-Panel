@@ -164,7 +164,7 @@ AstronInternalRepository.prototype.getZonesObjects = function(context, t_parent,
 	
 	var dg = new Datagram();
 	dg.writeInternalHeader([t_parent], 2102, this.airId);
-	dg.writeUInt32(context);
+	dg.writeContext(this, context);
 	dg.writeUInt32(t_parent);
 	dg.writeUInt16(zones.length);
 	
@@ -194,7 +194,7 @@ AstronInternalRepository.prototype.setField = function(distributedObject, fieldN
 AstronInternalRepository.prototype.getFields = function(context, distObj) {
 	var dg = new Datagram();
 	dg.writeInternalHeader([distObj.doId], packets.STATESERVER_OBJECT_GET_ALL, this.airId);
-	dg.writeUInt32(context);
+	dg.writeContext(this, context);
 	dg.writeUInt32(distObj.doId);
 	this.send(dg);
 }
