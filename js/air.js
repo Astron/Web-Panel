@@ -203,7 +203,6 @@ AstronInternalRepository.prototype.getFields = function(context, distObj) {
 
 // packet handling methods
 
-// TODO: in the future, this needs to handle, e.g.: optionals, owner, etc.
 AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModifiers, optionals) {	
 	var doId = dg.readUInt32();
 	var location = new Location(dg.readUInt32(), dg.readUInt32());
