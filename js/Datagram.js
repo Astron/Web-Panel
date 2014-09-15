@@ -59,10 +59,10 @@ Datagram.prototype.writeString = function(str) {
 	
 	var i = str.length;
 	while(i--) {
-		this.buffer[this.bufferOffset + i] = str.charCodeAt(i);
+		this.buffer[this.bufferIndex + i] = str.charCodeAt(i);
 	}
 	
-	this.bufferOffset += str.length;
+	this.bufferIndex += str.length;
 }
 
 Datagram.prototype.writeBlob = function(blob) {
