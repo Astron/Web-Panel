@@ -54,24 +54,22 @@ Datagram.prototype.writeUInt64 = function(n) {
 	}
 }
 
-// TODO: think of faster implementation
-// or at least cleaner
 Datagram.prototype.writeString = function(str) {
 	this.writeUInt16(str.length);
 	
-	for(var i = 0; i < str.length; ++i) {
-		this.writeUInt8(str.charCodeAt(i));
+	var i = str.length;
+	while(i--) {
+		this.buffer[this.bufferOffset + i] = str.charCodeAt(i);
 	}
+	
+	this.bufferOffset += str.length;
 }
-
-// TODO: think of a way to reduce code repetition
 
 Datagram.prototype.writeBlob = function(blob) {
 	this.writeUInt16(blob.length);
 	
-	for(var i = 0; i < blob.length; ++i) {
-		this.writeUInt8(blob[i]);
-	}
+	this.buffer.set(blob, this.bufferOffset);
+	this.bufferOffset += blob.lenfgth;
 }
 
 Datagram.prototype.writeContext = function(air, func) {
