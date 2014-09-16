@@ -5,6 +5,12 @@ var GUI = {
 		el.className = type;
 		el.style.left = GUIlocation.x;
 		el.style.top = GUIlocation.y;
+		root.appendChild(el);
+		return el;
+	},
+	label: function(element, text) {
+		element.appendChild(document.createTextNode(text));
+		return element;
 	}
 }
 
