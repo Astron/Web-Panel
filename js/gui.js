@@ -1,27 +1,29 @@
 var GUI = {
 	root : null,
-	drawElement : function(clickable, type, GUIlocation) {
-		var el = document.createElement(clickable ? "a" : "div");
-		el.className = type;
-		el.style.left = GUIlocation.x;
-		el.style.top = GUIlocation.y;
-		GUI.root.appendChild(el);
-		return el;
-	},
 	
 	actionCounter: 0,
 	actions: {},
+}
+
+function GUIElement(clickable, type, GUIlocation) {
+	this.el = document.createElement(clickable ? "a" : "div");
+	this.el.className = type;
+	this.el.style.left = GUIlocation.x;
+	this.el.style.top = GUIlocation.y;
 	
-	action: function(element, action) {
-		var count = actionCounter++;
-		actions[count] = action;
-		element.href = "javascript:GUI.actions["+count+"](e)";
-	}
-	
-	label: function(element, text) {
-		element.appendChild(document.createTextNode(text));
-		return element;
-	}
+	GUI.root.appendChild(el);
+}
+
+GUIElement.prototype.label = function(text) {
+	this.el.appendChild(document.createTextNode(text));
+	return this.el;
+}
+
+GUIElement.prototype.action = function(action) {
+	var count = GUI.actionCounter++;
+	GUI.actions[count] = action;
+	element.href = "javascript:GUI.actions["+count+"](e)";
+	return this.el;
 }
 
 function GUILocation(x, y) {
