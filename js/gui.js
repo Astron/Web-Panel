@@ -7,7 +7,7 @@ var GUI = {
 	// wrapper function for shorthand
 	create: function(type, clickable) {
 		return (new GUIElement(clickable || false, type));
-	}
+	},
 	
 	location: function(x, y) {
 		return {
