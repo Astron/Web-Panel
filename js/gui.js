@@ -37,8 +37,11 @@ GUIElement.prototype.action = function(action) {
 }
 
 GUIElement.prototype.move = function(loc) {
-	this.el.style.left = loc.x;
-	this.el.style.top = loc.y;
+	console.log(loc.x);
+	console.log(this.el.style.top);
+	this.el.style.left = loc.x+"px";
+	this.el.style.top = loc.y+"px";
+	console.log(this.el.style.top);
 	return this;
 }
 
