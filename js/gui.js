@@ -42,6 +42,16 @@ GUIElement.prototype.move = function(loc) {
 	return this;
 }
 
+GUIElement.prototype.backgroundColor = function(bg) {
+	this.el.style.backgroundColor = bg;
+	return this;
+}
+
+GUIElement.prototype.color = function(color) {
+	this.el.style.color = color;
+	return this;
+}
+
 window.addEventListener("load", function() {
 	GUI.root = document.body;
 });
