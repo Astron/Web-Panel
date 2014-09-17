@@ -39,6 +39,7 @@ GUIElement.prototype.action = function(action) {
 GUIElement.prototype.move = function(loc) {
 	this.el.style.left = loc.x;
 	this.el.style.top = loc.y;
+	return this;
 }
 
 window.addEventListener("load", function() {
