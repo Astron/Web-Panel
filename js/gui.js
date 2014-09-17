@@ -5,16 +5,21 @@ var GUI = {
 	actions: {},
 	
 	// wrapper function for shorthand
-	create: function(clickable, type, GUIlocation) {
-		return (new GUIElement(clickable, type, GUIlocation));
+	create: function(type, clickable) {
+		return (new GUIElement(clickable || false, type));
+	}
+	
+	location: function(x, y) {
+		return {
+			x: x,
+			y: y
+		}
 	}
 }
 
-function GUIElement(clickable, type, GUIlocation) {
+function GUIElement(clickable, type) {
 	this.el = document.createElement(clickable ? "a" : "div");
 	this.el.className = type;
-	this.el.style.left = GUIlocation.x;
-	this.el.style.top = GUIlocation.y;
 	
 	GUI.root.appendChild(this.el);
 }
@@ -31,9 +36,9 @@ GUIElement.prototype.action = function(action) {
 	return this;
 }
 
-function GUILocation(x, y) {
-	this.x = x || 0;
-	this.y = y || 0;
+GUIElement.prototype.move = function(loc) {
+	this.el.style.left = loc.x;
+	this.el.style.top = loc.y;
 }
 
 window.addEventListener("load", function() {
