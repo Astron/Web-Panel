@@ -76,6 +76,13 @@ GUIElement.prototype.rotate = function(radians, origin) {
 	if(origin) {
 		this.el.style.transformOrigin = this.el.style.webkitTransformOrigin = origin;
 	}
+	return this;
+}
+
+// connects two GUIElements with a line
+GUIElement.prototype.connect = function(other) {
+	var line = GUI.drawLine(GUI.location(this.el.style.left, this.el.style.top), GUI.location(other.el.style.left, other.el.style.top));
+	return this;
 }
 
 window.addEventListener("load", function() {
