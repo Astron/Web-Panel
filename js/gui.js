@@ -14,6 +14,17 @@ var GUI = {
 			x: x,
 			y: y
 		}
+	},
+	
+	drawLine: function(p1, p2) {
+		var dx = p2.x - p1.x, dy = p2.y - p1.y;
+		var len = Math.sqrt( (dx*dx) + (dy*dy) );
+		var theta = Math.asin( (dx / len) );
+		
+		return GUI.create("line", false)
+				.move(p1)
+				.width(len)
+				.rotate(theta, "top left");
 	}
 }
 
@@ -55,6 +66,18 @@ GUIElement.prototype.color = function(color) {
 	return this;
 }
 
+GUIElement.prototype.width = function(width) {
+	this.el.style.width = width + "px";
+	return this;
+}
+
+GUIElement.prototype.rotate = function(radians, origin) {
+	this.el.style.transform = this.el.style.webkitTransform = "rotate("+radians+"rad)";
+	if(origin) {
+		this.el.style.transformOrigin = this.el.style.webkitTransformOrigin = origin;
+	}
+}
+
 window.addEventListener("load", function() {
-	GUI.root = document.body;
+	GUI.root = document.getElementById("gui");
 });
