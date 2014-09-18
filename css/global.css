@@ -8,5 +8,11 @@
     background: #000;
     line-height: 100px;
     text-align: center;
-    position: relative;
+    position: absolute;
+}
+
+.line {
+    height: 10px;
+    background-color: #000;
+    position: absolute;
 }

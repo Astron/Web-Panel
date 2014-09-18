@@ -82,7 +82,16 @@ GUIElement.prototype.rotate = function(radians, origin) {
 // connects two GUIElements with a line
 // TODO: cleanup
 GUIElement.prototype.connect = function(other) {
-	var line = GUI.drawLine(GUI.location(this.el.style.left.slice(0, -2), this.el.style.top.slice(0,-2)), GUI.location(other.el.style.left.slice(0,-2), other.el.style.top.slice(0,-2)));
+	var myStyle = window.getComputedStyle(this.el), otherStyle = window.getComputedStyle(other.el);
+	
+	var line = GUI.drawLine(GUI.location(
+									this.el.style.left.slice(0, -2) + ( (myStyle.width.slice(0, -2) * 0.5)),
+		 							this.el.style.top.slice(0,-2)  + ( (myStyle.height.slice(0, -2) * 0.5))
+								),
+							GUI.location(other.el.style.left.slice(0,-2) + ( (otherStyle.width.slice(0, -2) * 0.5)),
+								 		other.el.style.top.slice(0,-2) + ( (otherStyle.height.slice(0, -2) * 0.5))
+								)
+							);
 	return this;
 }
 
