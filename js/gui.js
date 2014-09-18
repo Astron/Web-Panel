@@ -84,7 +84,6 @@ GUIElement.prototype.rotate = function(radians, origin) {
 // connects two GUIElements with a line
 GUIElement.prototype.connect = function(other) {
 	var mySize = this.getSize(), otherSize = other.getSize();
-		
 	var line = GUI.drawLine(GUI.location(
 									this.location.x + (mySize.width * 0.5),
 		 							this.location.y + (mySize.height * 0.5)
@@ -150,11 +149,6 @@ function HierarchyNode(parent, text) {
 	
 	this.element = GUI.create("circle", false)
 					  .label(text);
-					  
-	if(this.parent) {
-		console.log("Connect?");
-		this.element.connect(this.parent.element);
-	}
 	
 	this.layersFromRoot = 0;
 	this.age = 0;
@@ -195,6 +189,11 @@ HierarchyNode.prototype.calculateGridPosition = function() {
 HierarchyNode.prototype.recalcPosition = function(scale) {
 	this.calculateGridPosition();
 	this.element.move(GUI.location(this.gridX * scale, this.gridY * scale));
+	if(this.parent){
+		console.log(this.element+"->"+this.parent);
+		
+		this.element.connect(this.parent.element);
+	} 
 }
 
 HierarchyNode.prototype.recalcPositions = function() {
