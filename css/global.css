@@ -15,4 +15,5 @@
     height: 10px;
     background-color: #000;
     position: absolute;
+    z-index: -1;
 }
