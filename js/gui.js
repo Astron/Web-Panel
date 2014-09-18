@@ -117,7 +117,7 @@ function Hierarchy() {
 }
 
 Hierarchy.prototype.balance = function() {
-	this.calculateMaxHeight(this.rootNode);
+	this.rootNode.recalcPositions();
 }
 
 Hierarchy.calculateMaxHeight = function(node) {
@@ -150,6 +150,11 @@ function HierarchyNode(parent, text) {
 	
 	this.element = GUI.create("circle", false)
 					  .label(text);
+					  
+	if(this.parent) {
+		console.log("Connect?");
+		this.element.connect(this.parent.element);
+	}
 	
 	this.layersFromRoot = 0;
 	this.age = 0;
@@ -184,5 +189,20 @@ HierarchyNode.prototype.calculateGridPosition = function() {
 	return {
 		x: this.gridX,
 		y: this.gridY
+	}
+}
+
+HierarchyNode.prototype.recalcPosition = function(scale) {
+	this.calculateGridPosition();
+	this.element.move(GUI.location(this.gridX * scale, this.gridY * scale));
+}
+
+HierarchyNode.prototype.recalcPositions = function() {
+	var scale = 200; // FIXME: get this from somewhere :P
+	
+	this.recalcPosition(scale);
+	
+	for(var i = 0; i < this.children.length; ++i) {
+		this.children[i].recalcPositions();
 	}
 }
