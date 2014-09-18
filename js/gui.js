@@ -31,6 +31,7 @@ var GUI = {
 function GUIElement(clickable, type) {
 	this.el = document.createElement(clickable ? "a" : "div");
 	this.el.className = type;
+	this.location = GUI.location(0, 0);
 	
 	GUI.root.appendChild(this.el);
 }
@@ -48,11 +49,10 @@ GUIElement.prototype.action = function(action) {
 }
 
 GUIElement.prototype.move = function(loc) {
-	console.log(loc.x);
-	console.log(this.el.style.top);
-	this.el.style.left = loc.x+"px";
-	this.el.style.top = loc.y+"px";
-	console.log(this.el.style.top);
+	this.location = loc;
+	
+	this.el.style.left = this.location.x+"px";
+	this.el.style.top = this.location.y+"px";
 	return this;
 }
 
