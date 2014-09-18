@@ -43,8 +43,9 @@ function GUIElement(clickable, type) {
 GUIElement.prototype.label = function(text) {
 	var s = document.createElement("span");
 	s.className = this.type+"Label";
+	s.appendChild(document.createTextNode(text));
 	
-	this.el.appendChild(s.appendChild(document.createTextNode(text)));
+	this.el.appendChild(s);
 	return this;
 }
 
@@ -150,13 +151,13 @@ Hierarchy.prototype.calculateMaxWidth = function(node) {
 	return layerMaxWidth || (node == this.rootNode) ? 1 : 0;
 }
 
-function HierarchyNode(parent, text, action) {
+function HierarchyNode(parent, text, type, action) {
 	this.parent = parent;
 	this.text = text;
 	
 	this.children = [];
 	
-	this.element = GUI.create("circle", action !== undefined)
+	this.element = GUI.create(type || "circle", action !== undefined)
 					  .label(text);
 					  
 	if(action) {
