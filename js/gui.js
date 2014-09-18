@@ -145,14 +145,18 @@ Hierarchy.prototype.calculateMaxWidth = function(node) {
 	return layerMaxWidth || (node == this.rootNode) ? 1 : 0;
 }
 
-function HierarchyNode(parent, text) {
+function HierarchyNode(parent, text, action) {
 	this.parent = parent;
 	this.text = text;
 	
 	this.children = [];
 	
-	this.element = GUI.create("circle", false)
+	this.element = GUI.create("circle", action !== undefined)
 					  .label(text);
+					  
+	if(action) {
+		this.element.action(action);
+	}
 	
 	this.layersFromRoot = 0;
 	this.age = 0;
