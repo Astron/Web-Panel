@@ -17,15 +17,21 @@ var GUI = {
 	},
 	
 	drawLine: function(p1, p2) {
+		console.log("("+p1.x+","+p1.y+"),("+p2.x+","+p2.y+")");
+		
 		var dx = p2.x - p1.x, dy = p2.y - p1.y;
 		var len = Math.sqrt( (dx*dx) + (dy*dy) );
 		var theta = Math.asin( (dx / len) );
 		
+		console.log(theta);
+		
 		return GUI.create("line", false)
 				.move(p1)
 				.width(len)
-				.rotate(theta, "top left");
-	}
+				.rotate(theta - GUI.rightAngle, "top left");
+	},
+	
+	rightAngle: Math.PI / 2
 }
 
 function GUIElement(clickable, type) {
