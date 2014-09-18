@@ -120,7 +120,7 @@ Hierarchy.prototype.balance = function() {
 	this.calculateMaxHeight(this.rootNode);
 }
 
-Hierarchy.prototype.calculateMaxHeight = function(node) {
+Hierarchy.calculateMaxHeight = function(node) {
 	var maxHeight = 1;
 	if(node.children.length > maxHeight) maxHeight = node.children.length;
 	
@@ -163,4 +163,26 @@ function HierarchyNode(parent, text) {
 
 HierarchyNode.prototype.addChild = function(node) {
 	this.children.push(node);
+}
+
+HierarchyNode.prototype.calculateGridPosition = function() {
+	this.gridX = this.layersFromRoot;
+	
+	var yOffset = 0;
+	var adjustment = 0;
+	
+	if(this.age > 0) {
+		var nextSibling = this.parent.children[this.age - 1];
+		
+		// TODO: OPTIMIZE ME
+		yOffset = nextSibling.calculateGridPosition().y;
+		adjustment = Hierarchy.caulculateMaxHeight(nextSibling);
+	}
+	
+	this.gridY = yOffset + adjustment;
+	
+	return {
+		x: this.gridX,
+		y: this.gridY
+	}
 }
