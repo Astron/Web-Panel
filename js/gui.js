@@ -150,8 +150,13 @@ function HierarchyNode(parent, text) {
 	
 	this.element = GUI.create("circle", false)
 					  .label(text);
+	
+	this.layersFromRoot = 0;
 					  
-	if(this.parent) this.parent.addChild(this);
+	if(this.parent) {
+		this.parent.addChild(this);
+		this.layersFromRoot = this.parent.layersFromRoot + 1;
+	}
 }
 
 HierarchyNode.prototype.addChild = function(node) {
