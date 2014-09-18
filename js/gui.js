@@ -97,7 +97,7 @@ GUIElement.prototype.connect = function(other) {
 									other.location.y + (otherSize.height * 0.5)
 								)
 							);
-	return this;
+	return line; // this is a gotcha we ought to document somewhere
 }
 
 GUIElement.prototype.getSize = function() {
@@ -173,16 +173,22 @@ HierarchyNode.prototype.calculateGridPosition = function() {
 	
 	var yOffset = 0;
 	var adjustment = 0;
+	var parentYOffset = 0;
+	
+	if(this.parent) {
+		parentYOffset = this.parent.calculateGridPosition().y;
+	}
 	
 	if(this.age > 0) {
 		var nextSibling = this.parent.children[this.age - 1];
 		
 		// TODO: OPTIMIZE ME
-		yOffset = nextSibling.calculateGridPosition().y;
+		yOffset = nextSibling.calculateGridPosition().y - parentYOffset;
 		adjustment = Hierarchy.calculateMaxHeight(nextSibling);
 	}
 	
-	this.gridY = yOffset + adjustment;
+	
+	this.gridY = yOffset + adjustment + parentYOffset;
 	
 	return {
 		x: this.gridX,
