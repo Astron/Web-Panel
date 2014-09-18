@@ -176,7 +176,7 @@ HierarchyNode.prototype.calculateGridPosition = function() {
 		
 		// TODO: OPTIMIZE ME
 		yOffset = nextSibling.calculateGridPosition().y;
-		adjustment = Hierarchy.caulculateMaxHeight(nextSibling);
+		adjustment = Hierarchy.calculateMaxHeight(nextSibling);
 	}
 	
 	this.gridY = yOffset + adjustment;
