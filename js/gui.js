@@ -108,3 +108,40 @@ GUIElement.prototype.getSize = function() {
 window.addEventListener("load", function() {
 	GUI.root = document.getElementById("gui");
 });
+
+// represents a hierachy of nodes
+function Hierarchy() {
+	this.rootNode = new HierarchyNode(null, "Root");
+	
+	this.maxWidth = 1;
+}
+
+Hierarchy.prototype.balance = function() {
+	this.calculateMaxWidth(this.rootNode);
+}
+
+Hierarchy.prototype.calculateMaxWidth = function(node) {
+	var layerMaxWidth = 0;
+	
+	for(var i = 0; i < node.children.length; ++i) {
+		layerMaxWidth += this.calculateMaxWidth(node.children[i]);
+	}
+	
+	return layerMaxWidth || (node == this.rootNode) ? 1 : 0;
+}
+
+function HierarchyNode(parent, text) {
+	this.parent = parent;
+	this.text = text;
+	
+	this.children = [];
+	
+	this.element = GUI.create("circle", false)
+					  .label(text);
+					  
+	if(this.parent) this.parent.addChild(this);
+}
+
+HierarchyNode.prototype.addChild = function(node) {
+	this.children.push(node);
+}
