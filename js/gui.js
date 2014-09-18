@@ -125,7 +125,7 @@ Hierarchy.calculateMaxHeight = function(node) {
 	if(node.children.length > maxHeight) maxHeight = node.children.length;
 	
 	for(var i = 0; i < node.children.length; ++i) {
-		var h = this.calculateMaxHeight(node.children[i]);
+		var h = Hierarchy.calculateMaxHeight(node.children[i]);
 		maxHeight += h - 1;
 	}
 	
