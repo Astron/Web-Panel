@@ -85,11 +85,11 @@ GUIElement.prototype.connect = function(other) {
 	var myStyle = window.getComputedStyle(this.el), otherStyle = window.getComputedStyle(other.el);
 	
 	var line = GUI.drawLine(GUI.location(
-									this.el.style.left.slice(0, -2) + ( (myStyle.width.slice(0, -2) * 0.5)),
-		 							this.el.style.top.slice(0,-2)  + ( (myStyle.height.slice(0, -2) * 0.5))
+									this.location.x + ( (myStyle.width.slice(0, -2) * 0.5)),
+		 							this.location.y  + ( (myStyle.height.slice(0, -2) * 0.5))
 								),
-							GUI.location(other.el.style.left.slice(0,-2) + ( (otherStyle.width.slice(0, -2) * 0.5)),
-								 		other.el.style.top.slice(0,-2) + ( (otherStyle.height.slice(0, -2) * 0.5))
+							GUI.location(other.location.x + ( (otherStyle.width.slice(0, -2) * 0.5)),
+								 		other.location.y + ( (otherStyle.height.slice(0, -2) * 0.5))
 								)
 							);
 	return this;
