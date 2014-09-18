@@ -117,7 +117,19 @@ function Hierarchy() {
 }
 
 Hierarchy.prototype.balance = function() {
-	this.calculateMaxWidth(this.rootNode);
+	this.calculateMaxHeight(this.rootNode);
+}
+
+Hierarchy.prototype.calculateMaxHeight = function(node) {
+	var maxHeight = 1;
+	if(node.children.length > maxHeight) maxHeight = node.children.length;
+	
+	for(var i = 0; i < node.children.length; ++i) {
+		var h = this.calculateMaxHeight(node.children[i]);
+		maxHeight += h - 1;
+	}
+	
+	return maxHeight;
 }
 
 Hierarchy.prototype.calculateMaxWidth = function(node) {
