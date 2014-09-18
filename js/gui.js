@@ -95,6 +95,14 @@ GUIElement.prototype.connect = function(other) {
 	return this;
 }
 
+GUIElement.prototype.getSize = function() {
+	var style = window.getComputedStyle(this.el);
+	return {
+		width: style.width.slice(0, -2),
+		height: style.height.slice(0, -2)
+	};
+}
+
 window.addEventListener("load", function() {
 	GUI.root = document.getElementById("gui");
 });
