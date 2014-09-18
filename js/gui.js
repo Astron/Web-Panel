@@ -81,6 +81,10 @@ GUIElement.prototype.rotate = function(radians, origin) {
 	return this;
 }
 
+GUIElement.prototype.delete = function() {
+	GUI.root.removeChild(this.el);
+}
+
 // connects two GUIElements with a line
 GUIElement.prototype.connect = function(other) {
 	var mySize = this.getSize(), otherSize = other.getSize();
@@ -192,7 +196,11 @@ HierarchyNode.prototype.recalcPosition = function(scale) {
 	if(this.parent){
 		console.log(this.element+"->"+this.parent);
 		
-		this.element.connect(this.parent.element);
+		if(this.connection) {
+			this.connection.delete();
+		}
+		
+		this.connection = this.element.connect(this.parent.element);
 	} 
 }
 
