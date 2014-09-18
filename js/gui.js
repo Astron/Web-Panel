@@ -31,15 +31,20 @@ var GUI = {
 }
 
 function GUIElement(clickable, type) {
+	this.type = type;
+	
 	this.el = document.createElement(clickable ? "a" : "div");
-	this.el.className = type;
+	this.el.className = this.type;
 	this.location = GUI.location(0, 0);
 	
 	GUI.root.appendChild(this.el);
 }
 
 GUIElement.prototype.label = function(text) {
-	this.el.appendChild(document.createTextNode(text));
+	var s = document.createElement("span");
+	s.className = this.type+"Label";
+	
+	this.el.appendChild(s.appendChild(document.createTextNode(text)));
 	return this;
 }
 
