@@ -152,10 +152,12 @@ function HierarchyNode(parent, text) {
 					  .label(text);
 	
 	this.layersFromRoot = 0;
+	this.age = 0;
 					  
 	if(this.parent) {
 		this.parent.addChild(this);
 		this.layersFromRoot = this.parent.layersFromRoot + 1;
+		this.age = this.parent.children.length - 1;
 	}
 }
 
