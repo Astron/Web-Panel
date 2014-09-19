@@ -351,3 +351,13 @@ Table.prototype.modifyTitle = function(newTitle) {
 	this.title = newTitle;
 	this.element.children[0].children[0].innerHTML = newTitle
 }
+
+Table.prototype.reset = function() {
+	this.hash = {};
+	this.keys = [];
+	
+	var numElements = this.element.children.length;
+	for(var i = 1; i < numElements; ++i) {
+		this.element.removeChild(this.element.children[1]);
+	}
+}
