@@ -230,7 +230,7 @@ HierarchyNode.prototype.recalcPositions = function() {
 	}
 }
 
-function Table(title) {
+function Table(title, editedAction) {
 	this.title = title;
 	this.element = document.createElement("table");
 	GUI.root.appendChild(this.element);
@@ -238,6 +238,9 @@ function Table(title) {
 	
 	this.hash = {};
 	this.keys = [];
+	
+	this.isEditable = editedAction || false;
+	this.editedAction = editedAction;
 }
 
 Table.prototype.titleRow = function() {
@@ -265,12 +268,29 @@ Table.prototype.addKey = function(key, vals) {
 	for(var i = 0; i < vals.length; ++i) {
 		var valCol = document.createElement("td");
 		
-		if(i == vals.length - 1) {
+		if(i == vals.length - 1 && !this.isEditable) {
 			valCol.setAttribute("colspan", 99);
+		}
+		
+		if(this.isEditable) {
+			valCol.setAttribute("contentEditable", "true");
 		}
 		
 		valCol.appendChild(document.createTextNode(vals[i]));
 		row.appendChild(valCol);
+	}
+	
+	if(this.isEditable) {
+		var editCol = document.createElement("td");
+		editCol.setAttribute("colspan", 99);
+		
+		var btn = document.createElement("input");
+		btn.setAttribute("type", "submit");
+		btn.setAttribute("value", "Done");
+		btn.setAttribute("onclick", this.editedAction+"(\""+key+"\")");
+		
+		editCol.appendChild(btn);
+		row.appendChild(editCol);
 	}
 	
 	this.element.appendChild(row);
