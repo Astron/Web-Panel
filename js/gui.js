@@ -250,7 +250,9 @@ Table.prototype.titleRow = function() {
 	this.element.appendChild(row);
 }
 
-Table.prototype.addKey = function(key, val) {
+Table.prototype.addKey = function(key, vals) {
+	if(!Array.isArray(vals)) vals = [vals];
+	
 	this.keys.push(key);
 	this.hash[key] = val;
 	
@@ -258,12 +260,14 @@ Table.prototype.addKey = function(key, val) {
 	
 	var col1 = document.createElement("td");
 	col1.appendChild(document.createTextNode(key));
-	
-	var col2 = document.createElement("td");
-	col2.appendChild(document.createTextNode(val));
-	
 	row.appendChild(col1);
-	row.appendChild(col2);
+	
+	for(var i = 0; i < vals.length; ++i) {
+		var valCol = document.createElement("td");
+		valCol.appendChild(document.createTextNode(val));
+		row.appendChild(valCol);
+	}
+	
 	
 	this.element.appendChild(row);
 }
