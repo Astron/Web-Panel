@@ -291,7 +291,8 @@ Table.prototype.addKey = function(key, vals) {
 		var that = this;
 		
 		btn.onclick = function() {
-			that.editedAction(key);
+			this.hash[key] = getEditedValue(this.parentElement.parentElement);
+			that.editedAction(key, this.hash[key]);
 		}
 		
 		editCol.appendChild(btn);
@@ -331,4 +332,17 @@ Table.prototype.addMap = function(map) {
 	for(var i = 0; i < keys.length; ++i) {
 		this.addKey(keys[i], map[keys[i]]);
 	}
+}
+
+Table.prototpye.getEditedValue = function(row) {
+	var children = row.children;
+	
+	var res = [];
+	
+	for(var i = 1; i < children.length - 1; ++i) {
+		var col = children[i];
+		res.push(col.innerHTML);
+	}
+	
+	return res;
 }
