@@ -299,3 +299,11 @@ Table.prototype.modifyKey = function(key, newVals) {
 		el.children[1+i].innerHTML = newVals[i];
 	}
 }
+
+Table.prototype.addMap = function(map) {
+	var keys = Object.keys(map);
+	
+	for(var i = 0; i < keys.length; ++i) {
+		this.addKey(keys[i], map[keys[i]]);
+	}
+}
