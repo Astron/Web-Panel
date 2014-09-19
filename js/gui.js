@@ -346,3 +346,8 @@ Table.prototype.getEditedValue = function(row) {
 	
 	return res;
 }
+
+Table.prototype.modifyTitle = function(newTitle) {
+	this.title = newTitle;
+	this.element.children[0].children[0].innerHTML = newTitle
+}
