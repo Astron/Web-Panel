@@ -243,7 +243,7 @@ function Table(title) {
 Table.prototype.titleRow = function() {
 	var row = document.createElement("tr");
 	var col = document.createElement("th");
-	col.setAttribute("colspan", 2);
+	col.setAttribute("colspan", 99);
 	col.appendChild(document.createTextNode(this.title));
 	
 	row.appendChild(col);
