@@ -275,3 +275,27 @@ Table.prototype.addKey = function(key, vals) {
 	
 	this.element.appendChild(row);
 }
+
+Table.prototype.modifyKey = function(key, newVals) {
+	if(!Array.isArray(newVals)) newVals = [newVals];
+	
+	this.hash[key] = newVals;
+	
+	var index = this.keys.indexOf(key);
+	if(index == -1) {
+		// FIXME do something more intelligent here
+		console.log("Modifying unknown table key: "+key);
+		return;
+	}
+	
+	var el = this.element.children[1+index];
+	
+	if(el.children.length - 1 != newVals.length) {
+		console.log("Incorrect value length for preexisting key");
+		return;
+	}
+	
+	for(var i = 0; i < newVals.length; ++i) {
+		el.children[1+i].innerHTML = newVals[i];
+	}
+}
