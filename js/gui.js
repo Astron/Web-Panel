@@ -287,7 +287,12 @@ Table.prototype.addKey = function(key, vals) {
 		var btn = document.createElement("input");
 		btn.setAttribute("type", "submit");
 		btn.setAttribute("value", "Done");
-		btn.setAttribute("onclick", this.editedAction+"(\""+key+"\")");
+		
+		var that = this;
+		
+		btn.onclick = function() {
+			that.editedAction(key);
+		}
 		
 		editCol.appendChild(btn);
 		row.appendChild(editCol);
