@@ -264,10 +264,14 @@ Table.prototype.addKey = function(key, vals) {
 	
 	for(var i = 0; i < vals.length; ++i) {
 		var valCol = document.createElement("td");
+		
+		if(i == vals.length - 1) {
+			valCol.setAttribute("colspan", 99);
+		}
+		
 		valCol.appendChild(document.createTextNode(vals[i]));
 		row.appendChild(valCol);
 	}
-	
 	
 	this.element.appendChild(row);
 }
