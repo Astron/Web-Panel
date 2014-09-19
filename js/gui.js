@@ -229,3 +229,41 @@ HierarchyNode.prototype.recalcPositions = function() {
 		this.children[i].recalcPositions();
 	}
 }
+
+function Table(title) {
+	this.title = title;
+	this.element = document.createElement("table");
+	GUI.root.appendChild(this.element);
+	this.titleRow();
+	
+	this.hash = {};
+	this.keys = [];
+}
+
+Table.prototype.titleRow = function() {
+	var row = document.createElement("tr");
+	var col = document.createElement("th");
+	col.setAttribute("colspan", 2);
+	col.appendChild(document.createTextNode(this.title));
+	
+	row.appendChild(col);
+	this.element.appendChild(row);
+}
+
+Table.prototype.addKey = function(key, val) {
+	this.keys.push(key);
+	this.hash[key] = val;
+	
+	var row = document.createElement("tr");
+	
+	var col1 = document.createElement("td");
+	col1.appendChild(document.createTextNode(key));
+	
+	var col2 = document.createElement("td");
+	col2.appendChild(document.createTextNode(val));
+	
+	row.appendChild(col1);
+	row.appendChild(col2);
+	
+	this.element.appendChild(row);
+}
