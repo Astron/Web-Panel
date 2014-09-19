@@ -254,7 +254,7 @@ Table.prototype.addKey = function(key, vals) {
 	if(!Array.isArray(vals)) vals = [vals];
 	
 	this.keys.push(key);
-	this.hash[key] = val;
+	this.hash[key] = vals;
 	
 	var row = document.createElement("tr");
 	
@@ -264,7 +264,7 @@ Table.prototype.addKey = function(key, vals) {
 	
 	for(var i = 0; i < vals.length; ++i) {
 		var valCol = document.createElement("td");
-		valCol.appendChild(document.createTextNode(val));
+		valCol.appendChild(document.createTextNode(vals[i]));
 		row.appendChild(valCol);
 	}
 	
