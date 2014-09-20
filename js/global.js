@@ -24,6 +24,8 @@ function startAdmin() {
 	
 		hierarchy = generateHierarchy();
 		hierarchy.balance();
+		
+		inspector = generateInspector();
 	});
 }
 
@@ -59,8 +61,16 @@ function addObjectToHierarchy(obj) {
 	hierarchy.balance();
 }
 
+function generateInspector() {
+	return new Table("Inspector", function(key, val) {
+		alert("Updating "+key+" to equal "+val);
+	});
+}
+
 function inspect(obj) {
 	alert("Inspecting "+JSON.stringify(obj)+"...");
+	inspector.reset();
+	inspector.addMap(obj.properties);
 }
 
 window.addEventListener("load", startAdmin);
