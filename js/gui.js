@@ -27,6 +27,15 @@ var GUI = {
 				.rotate(theta - GUI.rightAngle, "top left");
 	},
 	
+	newRootContext: function(location) {
+		var ctx = document.createElement("div");
+		ctx.style.position = "absolute";
+		ctx.style.left = location.x+"px";
+		ctx.style.top = location.y+"px";
+		GUI.root.appendChild(ctx);
+		return ctx;
+	},
+	
 	rightAngle: Math.PI / 2
 }
 
