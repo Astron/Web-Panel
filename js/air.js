@@ -29,6 +29,8 @@ function AstronInternalRepository(debugLevel, dcFilePath) {
 	
 	this.contexts = {};
 	this.contextCounter = 0;
+	
+	this.enterObjectCallback = function(){};
 }
 
 AstronInternalRepository.prototype.connect = function(host, port, dcFile, connectedCallback) {
@@ -222,6 +224,8 @@ AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModi
 		
 		this.doId2do[location.parent].zones[location.zone].push(doId);
 	}
+	
+	this.enterObjectCallback(distObj);
 	
 	console.log(distObj.dclass[1]+"("+doId+") at ("+distObj.location.parent+","+distObj.location.zone+")");
 	console.log(distObj.properties);
