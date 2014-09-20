@@ -137,8 +137,8 @@ function Hierarchy(root) {
 	this.maxWidth = 1;
 }
 
-Hierarchy.prototype.balance = function() {
-	this.rootNode.recalcPositions();
+Hierarchy.prototype.balance = function(scale) {
+	this.rootNode.recalcPositions(scale || 200);
 }
 
 Hierarchy.calculateMaxHeight = function(node) {
@@ -234,13 +234,11 @@ HierarchyNode.prototype.recalcPosition = function(scale) {
 	} 
 }
 
-HierarchyNode.prototype.recalcPositions = function() {
-	var scale = 200; // FIXME: get this from somewhere :P
-	
+HierarchyNode.prototype.recalcPositions = function(scale) {
 	this.recalcPosition(scale);
 	
 	for(var i = 0; i < this.children.length; ++i) {
-		this.children[i].recalcPositions();
+		this.children[i].recalcPositions(scale);
 	}
 }
 
