@@ -34,15 +34,19 @@ function generateHierarchy() {
 		
 		HierarchyGlobals.zoneNodes[zone] =
 			 new HierarchyNode(newHierarchy.rootNode, HierarchyGlobals.zones[i], "diamond", function() {
-				 refreshZone(zone);
+				 refreshZone(HierarchyGlobals.root, zone);
 			 }, context);
 	}
 	
 	return newHierarchy;
 }
 
-function refreshZone(zone) {
+function refreshZone(parent, zone) {
 	HierarchyGlobals.zoneNodes[zone].removeChildren();
+	
+	air.getZonesObjects(function(numObjects) {
+		alert(numObjects+" object(s) in zone "+zone);
+	}, parent, [zone]);
 }
 
 window.addEventListener("load", startAdmin);
