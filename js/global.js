@@ -54,7 +54,7 @@ function refreshZone(parent, zone) {
 }
 
 function addObjectToHierarchy(obj) {
-	var name = obj.dclass[1]+"("+obj.doId+")";
+	var name = getObjectName(obj);
 	new HierarchyNode(HierarchyGlobals.zoneNodes[obj.location.zone], name, "circle", function() {
 		inspect(obj);
 	}, HierarchyGlobals.context);
@@ -69,7 +69,12 @@ function generateInspector() {
 
 function inspect(obj) {
 	inspector.reset();
+	inspector.modifyTitle(getObjectName(obj));
 	inspector.addMap(obj.properties);
+}
+
+function getObjectName(obj) {
+	return obj.dclass[1]+"("+obj.doId+")";
 }
 
 window.addEventListener("load", startAdmin);
