@@ -68,7 +68,6 @@ function generateInspector() {
 }
 
 function inspect(obj) {
-	alert("Inspecting "+JSON.stringify(obj)+"...");
 	inspector.reset();
 	inspector.addMap(obj.properties);
 }
