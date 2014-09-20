@@ -8,7 +8,8 @@ var HierarchyGlobals = {
 	root: 10000,
 	zones: [
 		0
-	]
+	],
+	
 	zoneNodes: {
 		
 	}
@@ -31,16 +32,17 @@ function generateHierarchy() {
 	for(var i = 0; i < HierarchyGlobals.zones.length; ++i) {
 		var zone = HierarchyGlobals.zones[i];
 		
-		zoneNodes[zone] = new HierarchyNode(newHierarchy.rootNode, HierarchyGlobals.zones[i], "diamond", function() {
-			refreshZone(zone);
-		}, context);
+		HierarchyGlobals.zoneNodes[zone] =
+			 new HierarchyNode(newHierarchy.rootNode, HierarchyGlobals.zones[i], "diamond", function() {
+				 refreshZone(zone);
+			 }, context);
 	}
 	
 	return newHierarchy;
 }
 
 function refreshZone(zone) {
-	zoneNodes[zone].removeChildren();
+	HierarchyGlobals.zoneNodes[zone].removeChildren();
 }
 
 window.addEventListener("load", startAdmin);
