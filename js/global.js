@@ -1,4 +1,4 @@
-var air, hierarchy, inspector;
+var air, hierarchy, inspector, inspectedObject;
 
 // in the future, this should be found by either GUI
 // and/or new Astron discovery mechanisms
@@ -63,11 +63,12 @@ function addObjectToHierarchy(obj) {
 
 function generateInspector() {
 	return new Table("Inspector", function(key, val) {
-		alert("Updating "+key+" to equal "+val);
+		air.setField(inspectedObject, key, val);
 	});
 }
 
 function inspect(obj) {
+	inspectedObject = obj;
 	inspector.reset();
 	inspector.modifyTitle(getObjectName(obj));
 	inspector.addMap(obj.properties);
