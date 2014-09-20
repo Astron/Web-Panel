@@ -59,4 +59,8 @@ function addObjectToHierarchy(obj) {
 	hierarchy.balance();
 }
 
+function inspect(obj) {
+	alert("Inspecting "+JSON.stringify(obj)+"...");
+}
+
 window.addEventListener("load", startAdmin);
