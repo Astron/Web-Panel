@@ -17,6 +17,8 @@ var HierarchyGlobals = {
 
 function startAdmin() {
 	air = new AstronInternalRepository(DebugLevel.TRACE);
+	air.enterObjectCallback = addObjectToHierarchy;
+	
 	air.connect("localhost", 8198, "simple_example.dc", function() {
 		// connected to Astron
 	
@@ -47,6 +49,10 @@ function refreshZone(parent, zone) {
 	air.getZonesObjects(function(numObjects) {
 		alert(numObjects+" object(s) in zone "+zone);
 	}, parent, [zone]);
+}
+
+function addObjectToHierarchy(obj) {
+	alert(JSON.stringify(obj));
 }
 
 window.addEventListener("load", startAdmin);
