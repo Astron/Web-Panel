@@ -17,12 +17,19 @@ function startAdmin() {
 		// connected to Astron
 	
 		hierarchy = generateHierarchy();
+		hierarchy.balance();
 	});
 }
 
 function generateHierarchy() {
 	var context = GUI.newRootContext(GUI.location(350, 100));
 	var newHierarchy = new Hierarchy(context);
+	
+	for(var i = 0; i < HierarchyGlobals.zones.length; ++i) {
+		new HierarchyNode(newHierarchy.rootNode, HierarchyGlobals.zones[i], "diamond", function() {
+			toggleZone(zones[i])
+		}, context);
+	}
 	
 	return newHierarchy;
 }
