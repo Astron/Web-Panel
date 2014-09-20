@@ -46,9 +46,9 @@ function GUIElement(clickable, type, root) {
 	this.el.className = this.type;
 	this.location = GUI.location(0, 0);
 	
-	if(!root) root = GUI.root;
+	this.root = root || GUI.root;
 	
-	root.appendChild(this.el);
+	this.root.appendChild(this.el);
 }
 
 GUIElement.prototype.label = function(text) {
@@ -99,7 +99,7 @@ GUIElement.prototype.rotate = function(radians, origin) {
 }
 
 GUIElement.prototype.delete = function() {
-	GUI.root.removeChild(this.el);
+	this.root.removeChild(this.el);
 }
 
 // connects two GUIElements with a line
