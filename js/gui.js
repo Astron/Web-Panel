@@ -192,6 +192,18 @@ HierarchyNode.prototype.addChild = function(node) {
 	this.children.push(node);
 }
 
+HierarchyNode.prototype.removeChildren = function() {
+	for(var i = 0; i < this.children.length; ++i) {
+		if(this.children[i].connection) {
+			this.children[i].connection.delete();
+		}
+		
+		this.children[i].element.delete();
+	}
+	
+	this.children = [];
+}
+
 HierarchyNode.prototype.calculateGridPosition = function() {
 	this.gridX = this.layersFromRoot;
 	

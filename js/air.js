@@ -29,6 +29,8 @@ function AstronInternalRepository(debugLevel, dcFilePath) {
 	
 	this.contexts = {};
 	this.contextCounter = 0;
+	
+	this.enterObjectCallback = function(){};
 }
 
 AstronInternalRepository.prototype.connect = function(host, port, dcFile, connectedCallback) {
@@ -56,8 +58,7 @@ AstronInternalRepository.prototype.connect = function(host, port, dcFile, connec
 			};
 	
 			that.socket.onmessage = function(e) {
-				console.log("Incoming");
-				that.message(new DatagramIterator(new Uint8Array(e.data)));
+				that.incomingMessage(new Uint8Array(e.data));
 			}
 			
 		} else {
@@ -71,6 +72,10 @@ AstronInternalRepository.prototype.connect = function(host, port, dcFile, connec
 	
 	
 	console.log("Connecting");
+}
+
+AstronInternalRepository.prototype.incomingMessage = function(msg) {
+	this.message(new DatagramIterator(msg, this.incomingMessage.bind(this)));
 }
 
 AstronInternalRepository.prototype.connected = function(e) {
@@ -113,6 +118,8 @@ AstronInternalRepository.prototype.message = function(dg) {
 	} else {
 		console.log("Unknown packet of msgtype "+dg.msgtype+" received");
 	}
+	
+	dg.eof();
 	
 	console.log(dg);
 }
@@ -222,6 +229,8 @@ AstronInternalRepository.prototype.handleEnterObject = function(dg, requiredModi
 		
 		this.doId2do[location.parent].zones[location.zone].push(doId);
 	}
+	
+	this.enterObjectCallback(distObj);
 	
 	console.log(distObj.dclass[1]+"("+doId+") at ("+distObj.location.parent+","+distObj.location.zone+")");
 	console.log(distObj.properties);
