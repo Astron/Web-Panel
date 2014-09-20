@@ -5,10 +5,13 @@
 	<link rel="stylesheet" type="text/css" href="css/global.css"/>
 	<script src="js/serializeToken.js"></script>
 	<script src="js/global.js"></script>
+<<<<<<< HEAD
+	<script src="js/gui.js"></script>
+=======
 	<script src="js/air.js"></script>
 	<script src="js/Datagram.js"></script>
 	<script src="js/dcparser.js"></script>
-	<script src="js/gui.js"></script>
+>>>>>>> master
 </head>
 <body>
 	<h1>Astron Control Panel</h1> <br/>
