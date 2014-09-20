@@ -58,8 +58,7 @@ AstronInternalRepository.prototype.connect = function(host, port, dcFile, connec
 			};
 	
 			that.socket.onmessage = function(e) {
-				console.log("Incoming");
-				that.message(new DatagramIterator(new Uint8Array(e.data)));
+				that.incomingMessage(new Uint8Array(e.data));
 			}
 			
 		} else {
@@ -73,6 +72,10 @@ AstronInternalRepository.prototype.connect = function(host, port, dcFile, connec
 	
 	
 	console.log("Connecting");
+}
+
+AstronInternalRepository.prototype.incomingMessage = function(msg) {
+	this.message(new DatagramIterator(msg, this.incomingMessage.bind(this)));
 }
 
 AstronInternalRepository.prototype.connected = function(e) {
@@ -115,6 +118,8 @@ AstronInternalRepository.prototype.message = function(dg) {
 	} else {
 		console.log("Unknown packet of msgtype "+dg.msgtype+" received");
 	}
+	
+	dg.eof();
 	
 	console.log(dg);
 }

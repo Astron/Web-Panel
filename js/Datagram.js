@@ -117,6 +117,12 @@ function DatagramIterator(buffer, callback) {
 	
 }
 
+DatagramIterator.prototype.eof = function() {
+	if(this.buffer.length - this.size > 2) {
+		this.callback(this.buffer.subarray(this.size + 2));
+	}
+}
+
 DatagramIterator.prototype.readInternalHeader = function() {	
 	var recipient_count = this.readUInt8();
 	for(var i = 0; i < recipient_count; ++i) {
