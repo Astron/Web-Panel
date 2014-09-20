@@ -9,6 +9,9 @@ var HierarchyGlobals = {
 	zones: [
 		0
 	]
+	zoneNodes: {
+		
+	}
 }
 
 function startAdmin() {
@@ -28,7 +31,7 @@ function generateHierarchy() {
 	for(var i = 0; i < HierarchyGlobals.zones.length; ++i) {
 		var zone = HierarchyGlobals.zones[i];
 		
-		new HierarchyNode(newHierarchy.rootNode, HierarchyGlobals.zones[i], "diamond", function() {
+		zoneNodes[zone] = new HierarchyNode(newHierarchy.rootNode, HierarchyGlobals.zones[i], "diamond", function() {
 			refreshZone(zone);
 		}, context);
 	}
@@ -37,7 +40,7 @@ function generateHierarchy() {
 }
 
 function refreshZone(zone) {
-	console.log("Refrshing zone "+zone);
+	zoneNodes[zone].removeChildren();
 }
 
 window.addEventListener("load", startAdmin);
