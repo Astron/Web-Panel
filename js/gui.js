@@ -321,8 +321,10 @@ Table.prototype.modifyKey = function(key, newVals) {
 	
 	var index = this.keys.indexOf(key);
 	if(index == -1) {
-		// FIXME do something more intelligent here
-		console.log("Modifying unknown table key: "+key);
+		// this should throw a warning,
+		// but for the time being,
+		// just add a new key if you attempt to modify an unknown key
+		this.addKey(key, newVals);
 		return;
 	}
 	
