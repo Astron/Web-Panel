@@ -26,12 +26,18 @@ function generateHierarchy() {
 	var newHierarchy = new Hierarchy(context);
 	
 	for(var i = 0; i < HierarchyGlobals.zones.length; ++i) {
+		var zone = HierarchyGlobals.zones[i];
+		
 		new HierarchyNode(newHierarchy.rootNode, HierarchyGlobals.zones[i], "diamond", function() {
-			toggleZone(zones[i])
+			refreshZone(zone);
 		}, context);
 	}
 	
 	return newHierarchy;
+}
+
+function refreshZone(zone) {
+	console.log("Refrshing zone "+zone);
 }
 
 window.addEventListener("load", startAdmin);
