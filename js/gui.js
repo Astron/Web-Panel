@@ -5,8 +5,8 @@ var GUI = {
 	actions: {},
 	
 	// wrapper function for shorthand
-	create: function(type, clickable) {
-		return (new GUIElement(clickable || false, type));
+	create: function(type, clickable, root) {
+		return (new GUIElement(clickable || false, type, root));
 	},
 	
 	location: function(x, y) {
@@ -16,12 +16,12 @@ var GUI = {
 		}
 	},
 	
-	drawLine: function(p1, p2) {		
+	drawLine: function(p1, p2, root) {		
 		var dx = p2.x - p1.x, dy = p2.y - p1.y;
 		var len = Math.sqrt( (dx*dx) + (dy*dy) );
 		var theta = Math.asin( (dx / len) );
 				
-		return GUI.create("line", false)
+		return GUI.create("line", false, root)
 				.move(p1)
 				.width(len)
 				.rotate(theta - GUI.rightAngle, "top left");
@@ -30,14 +30,16 @@ var GUI = {
 	rightAngle: Math.PI / 2
 }
 
-function GUIElement(clickable, type) {
+function GUIElement(clickable, type, root) {
 	this.type = type;
 	
 	this.el = document.createElement(clickable ? "a" : "div");
 	this.el.className = this.type;
 	this.location = GUI.location(0, 0);
 	
-	GUI.root.appendChild(this.el);
+	if(!root) root = GUI.root;
+	
+	root.appendChild(this.el);
 }
 
 GUIElement.prototype.label = function(text) {
@@ -92,7 +94,7 @@ GUIElement.prototype.delete = function() {
 }
 
 // connects two GUIElements with a line
-GUIElement.prototype.connect = function(other) {
+GUIElement.prototype.connect = function(other, root) {
 	var mySize = this.getSize(), otherSize = other.getSize();
 	var line = GUI.drawLine(GUI.location(
 									this.location.x + (mySize.width * 0.5),
@@ -101,7 +103,8 @@ GUIElement.prototype.connect = function(other) {
 							GUI.location(
 									other.location.x + (otherSize.width * 0.5),
 									other.location.y + (otherSize.height * 0.5)
-								)
+								),
+								root
 							);
 	return line; // this is a gotcha we ought to document somewhere
 }
@@ -119,8 +122,8 @@ window.addEventListener("load", function() {
 });
 
 // represents a hierachy of nodes
-function Hierarchy() {
-	this.rootNode = new HierarchyNode(null, "Root");
+function Hierarchy(root) {
+	this.rootNode = new HierarchyNode(null, "Root", null, null, root);
 	
 	this.maxWidth = 1;
 }
@@ -151,13 +154,13 @@ Hierarchy.prototype.calculateMaxWidth = function(node) {
 	return layerMaxWidth || (node == this.rootNode) ? 1 : 0;
 }
 
-function HierarchyNode(parent, text, type, action) {
+function HierarchyNode(parent, text, type, action, root) {
 	this.parent = parent;
 	this.text = text;
 	
 	this.children = [];
 	
-	this.element = GUI.create(type || "circle", action !== undefined)
+	this.element = GUI.create(type || "circle", action !== undefined, root)
 					  .label(text);
 					  
 	if(action) {
@@ -166,6 +169,8 @@ function HierarchyNode(parent, text, type, action) {
 	
 	this.layersFromRoot = 0;
 	this.age = 0;
+	
+	this.root = root;
 					  
 	if(this.parent) {
 		this.parent.addChild(this);
@@ -216,7 +221,7 @@ HierarchyNode.prototype.recalcPosition = function(scale) {
 			this.connection.delete();
 		}
 		
-		this.connection = this.element.connect(this.parent.element);
+		this.connection = this.element.connect(this.parent.element, this.root);
 	} 
 }
 
