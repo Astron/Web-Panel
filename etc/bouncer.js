@@ -44,20 +44,20 @@ function parseMessage(msg) {
 
 function getMsgHeader(dg) {
 	var header = {
-		length: (dg[1] << 8) | dg[0],
-		recipient_count: dg[2],
+		length: dg.readUInt16LE(0),
+		recipient_count: dg.readUInt8(2),
 		isControl: false
 	};
 	
 	if(header.recipient_count == 1) {
-		if(dg[3] == 1 && dg[4] == 0 && dg[5] == 0 && dg[6] == 0 && dg[7] == 0 && dg[8] == 0 && dg[9] == 0 && dg[10] == 0) {
+		if(dg.readUInt32LE(3) == 1 && dg.readUInt32LE(7) == 0) {
 			header.isControl = true;
 		}
 	}
 	
 	msgtypeOffset = 3 + (8 * header.recipient_count) + (header.isControl ? 0 : 8);
 	
-	header.msgtype = (dg[msgtypeOffset + 1] << 8) | dg[msgtypeOffset];
+	header.msgtype = dg.readUInt16LE(msgtypeOffset);
 	
 	return header;
 }
