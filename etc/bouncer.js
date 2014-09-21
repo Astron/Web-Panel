@@ -3,7 +3,7 @@
 // depends on ws module
 // do not bother fixing the long list of bugs in this
 
-var whitelist = [], whitelistEnabled = true;
+var whitelist = [9000, 2102, 2020], whitelistEnabled = true;
 
 var net = require('net');
 var ws = require('ws');
