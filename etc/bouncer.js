@@ -10,6 +10,9 @@ var Packet = require("./Packet"), OutPacket = require("./OutPacket");
 
 var PROXY_CONTROL_MSGTYPE = 1337;
 
+var accounts = new AccountManager();
+accounts.addAccount("root", new Account("toor", new Permissions(false, true, true, true)));
+
 function Session(ws, astronPort) {
 	var that = this;
 	
@@ -43,8 +46,9 @@ Session.prototype.incomingMessage = function(message) {
 			var o = JSON.parse(dg.readString());
 			
 			if(o.type == "login") {
-				if(o.username == "root" && o.password == "toor") {
-					this.enableAll();
+				if(accounts.verifyAccount(o.username, o.password)) {
+					accounts.activatePermissions(o.username, this);
+					
 					this.sendProxyResponse({
 						type: "login",
 						success: true
