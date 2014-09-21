@@ -3,50 +3,51 @@
 // depends on ws module
 // do not bother fixing the long list of bugs in this
 
-var Packet = require("./Packet");
-
-var whitelist = [9000, 2102, 2020], whitelistEnabled = true;
-
 var net = require('net');
 var ws = require('ws');
 
-var astron = net.connect({port: 7199},
-	function() {
-		console.log("Connection to Astron established");
+var Packet = require("./Packet");
+
+function Session(ws, astronPort) {
+	this.whitelist = [9000, 2102, 2020];
+	this.whitelistEnabled = true;
+
+	this.socket = net.connect({
+		port: astronPort
+	}, function() {
+		console.log("Connected to Astron")
 	});
 	
-var wss = new (ws.Server)({
-	port: 8198
-});
-
-var browser;
-
-wss.on('connection', function(ws) {
-	browser = ws;
+	this.ws = ws;
+	this.ws.on('message', this.incomingMessage);
 	
-	ws.on('message', function(message) {
-		parseMessage(message);
+	this.socket.on('data', function(d) {
+		this.ws.send(d, {binary: true});
 	});
-});	
-	
-astron.on('data', function(d) {
-	console.log("Data from Astron! Passing");
-	browser.send(d, {binary: true});
-})
+}
 
-function parseMessage(msg) {
+Session.prototype.incomingMessage = function(message) {
 	dg = new Packet(msg);
 	dg.readMDHeader();
 	
 	console.log("Message type: "+dg.msgtype);
 	
-	if(whitelistEnabled && whitelist.indexOf(dg.msgtype) == -1) {
+	if(this.whitelistEnabled && this.whitelist.indexOf(dg.msgtype) == -1) {
 		console.log("SECURITY: Admin attempted to send "+dg.msgtype);
 	} else {
-		astron.write(msg);	
+		this.socket.write(msg);	
 	}
 		
 	if(dg.length + 2 < msg.length) {
-		parseMessage(msg.slice(dg.length + 2));
+		this.incomingMessage(msg.slice(dg.length + 2));
 	}
 }
+
+
+var wss = new (ws.Server)({
+	port: 8198
+});
+
+wss.on('connection', function(ws) {
+	var sess = new Session(ws, 7199);
+});
