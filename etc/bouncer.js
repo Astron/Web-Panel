@@ -88,10 +88,10 @@ Session.prototype.enableManipulation = function() {
 	this.whitelist.push(2020); // STATESERVER_OBJECT_SET_FIELD
 }
 
-Session.prototype.sendProxyResponse = function(resp) {
+Session.prototype.sendProxyResponse = function(msg) {
 	var resp = new OutPacket();
 	resp.writeMDHeader([PROXY_CONTROL_MSGTYPE], PROXY_CONTROL_MSGTYPE, PROXY_CONTROL_MSGTYPE);
-	resp.writeString(JSON.stringify(resp));
+	resp.writeString(JSON.stringify(msg));
 	this.ws.send(resp.serialize())
 }
 
