@@ -3,6 +3,8 @@
 // depends on ws module
 // do not bother fixing the long list of bugs in this
 
+var whitelist = [], whitelistEnabled = true;
+
 var net = require('net');
 var ws = require('ws');
 
@@ -36,8 +38,12 @@ function parseMessage(msg) {
 	
 	console.log("Message type: "+dg.msgtype);
 	
-	astron.write(msg);
-	
+	if(whitelistEnabled && whitelist.indexOf(dg.msgtype) == -1) {
+		console.log("SECURITY: Admin attempted to send "+dg.msgtype);
+	} else {
+		astron.write(msg);	
+	}
+		
 	if(dg.length + 2 < msg.length) {
 		parseMessage(msg.slice(dg.length + 2));
 	}
