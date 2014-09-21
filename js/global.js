@@ -68,7 +68,6 @@ function generateInspector() {
 }
 
 function inspect(obj) {
-	console.log(obj);
 	inspectedObject = obj;
 	inspector.reset();
 	inspector.modifyTitle(getObjectName(obj));
