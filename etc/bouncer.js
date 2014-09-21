@@ -10,9 +10,6 @@ var Packet = require("./Packet"), OutPacket = require("./OutPacket");
 
 var PROXY_CONTROL_MSGTYPE = 1337;
 
-var accounts = new AccountManager();
-accounts.addAccount("root", new Account("toor", new Permissions(false, true, true, true)));
-
 function Session(ws, astronPort) {
 	var that = this;
 	
@@ -114,7 +111,7 @@ AccountManager.prototype.verifyAccount = function(name, pass) {
 }
 
 AccountManager.prototype.activatePermissions = function(name, session) {
-	var perms = this.accounts[name].permisssions;
+	var perms = this.accounts[name].permissions;
 	
 	if(perms.all) {
 		session.enableAll();
@@ -144,3 +141,6 @@ var wss = new (ws.Server)({
 wss.on('connection', function(ws) {
 	var sess = new Session(ws, 7199);
 });
+
+var accounts = new AccountManager();
+accounts.addAccount("root", new Account("toor", new Permissions(false, true, true, true)));
