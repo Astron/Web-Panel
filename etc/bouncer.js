@@ -95,6 +95,44 @@ Session.prototype.sendProxyResponse = function(msg) {
 	this.ws.send(resp.serialize())
 }
 
+function AccountManager() {
+	this.accounts = {};
+}
+
+AccountManager.prototype.addAccount = function(name, account) {
+	this.accounts[name] = account;
+}
+
+AccountManager.prototype.verifyAccount = function(name, pass) {
+	if(!this.accounts[name]) return false;
+	if(this.accounts[name].password != pass) return false;
+	return true;
+}
+
+AccountManager.prototype.activatePermissions = function(name, session) {
+	var perms = this.accounts[name].permisssions;
+	
+	if(perms.all) {
+		session.enableAll();
+	} else {
+		if(perms.internalProtocol) session.enableInternalProtocol();
+		if(perms.inspection) session.enableInspection();
+		if(perms.manipulation) session.enableManipulation();
+	}
+}
+
+function Account(password, permissions) {
+	this.password = password;
+	this.permissions = permissions;
+}
+
+function Permissions(all, internalProtocol, inspection, manipulation) {
+	this.all = all;
+	this.internalProtocol = internalProtocol;
+	this.inspection = inspection;
+	this.manipulation = manipulation;
+}
+
 var wss = new (ws.Server)({
 	port: 8198
 });
