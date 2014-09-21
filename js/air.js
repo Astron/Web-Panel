@@ -82,10 +82,7 @@ AstronInternalRepository.prototype.incomingMessage = function(msg) {
 AstronInternalRepository.prototype.connected = function(e) {
 	this.isConnected = true;
 	this.log(DebugLevel.INFO, "Connected to Astron");
-	this.airId = 1337;
-	
-	this.subscribeChannel(this.airId);
-	
+	this.airId = 1337;	
 	
 }
 
@@ -121,6 +118,8 @@ AstronInternalRepository.prototype.message = function(dg) {
 		var resp = JSON.parse(dg.readString());
 		
 		if(resp.type == "login") {
+			this.subscribeChannel(this.airId);
+			
 			this.authCallback(resp.success);
 		} else {
 			console.log("Unknown proxy message: "+resp.type);
