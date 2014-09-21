@@ -9,6 +9,8 @@ var ws = require('ws');
 var Packet = require("./Packet");
 
 function Session(ws, astronPort) {
+	var that = this;
+	
 	this.whitelist = [9000, 2102, 2020];
 	this.whitelistEnabled = true;
 
@@ -19,15 +21,17 @@ function Session(ws, astronPort) {
 	});
 	
 	this.ws = ws;
-	this.ws.on('message', this.incomingMessage);
+	this.ws.on('message', function(message) {
+		that.incomingMessage(message);
+	});
 	
 	this.socket.on('data', function(d) {
-		this.ws.send(d, {binary: true});
+		that.ws.send(d, {binary: true});
 	});
 }
 
 Session.prototype.incomingMessage = function(message) {
-	dg = new Packet(msg);
+	dg = new Packet(message);
 	dg.readMDHeader();
 	
 	console.log("Message type: "+dg.msgtype);
@@ -35,10 +39,10 @@ Session.prototype.incomingMessage = function(message) {
 	if(this.whitelistEnabled && this.whitelist.indexOf(dg.msgtype) == -1) {
 		console.log("SECURITY: Admin attempted to send "+dg.msgtype);
 	} else {
-		this.socket.write(msg);	
+		this.socket.write(message);	
 	}
 		
-	if(dg.length + 2 < msg.length) {
+	if(dg.length + 2 < message.length) {
 		this.incomingMessage(msg.slice(dg.length + 2));
 	}
 }
