@@ -8,6 +8,8 @@ Packet.prototype.readUInt8 = function(){ this.offset += 1; if(this.offset-2>=thi
 Packet.prototype.readUInt16 = function(bypassCheck){ this.offset += 2; if(this.offset-4>=this.length && !bypassCheck)return 0; return this.buf.readUInt16LE(this.offset-2); };
 Packet.prototype.readUInt32 = function(){ this.offset += 4; if(this.offset-6>=this.length)return 0; return this.buf.readUInt32LE(this.offset-4); };
 Packet.prototype.readUInt64 = function(){ this.offset += 8; if(this.offset-10>=this.length)return 0; return [this.buf.readUInt32LE(this.offset-4), this.buf.readUInt32LE(this.offset-8)]; };
+Packet.prototype.readBlob = function(l){ this.offset+=l; if(this.offset-10 >= this.length) return null; var b = new Buffer(l); this.buf.copy(b, 0, this.offset-l, this.offset);  return b};
+Packet.prototype.readString = function(){ return this.readBlob(this.readUInt16()).toString(); }
 
 Packet.prototype.readMDHeader = function(){ 
 	this.recipient_count = this.readUInt8();

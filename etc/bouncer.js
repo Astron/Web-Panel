@@ -40,6 +40,7 @@ Session.prototype.incomingMessage = function(message) {
 	
 	if(dg.msgtype == PROXY_CONTROL_MSGTYPE) {
 		console.log("Control message");
+		console.log(JSON.parse(dg.readString()));
 	} else {
 		if(this.whitelistEnabled && this.whitelist.indexOf(dg.msgtype) == -1) {
 			console.log("SECURITY: Admin attempted to send "+dg.msgtype);
