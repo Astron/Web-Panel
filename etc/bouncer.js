@@ -8,6 +8,8 @@ var ws = require('ws');
 
 var Packet = require("./Packet");
 
+var PROXY_CONTROL_MSGTYPE = 1337;
+
 function Session(ws, astronPort) {
 	var that = this;
 	
@@ -36,10 +38,14 @@ Session.prototype.incomingMessage = function(message) {
 	
 	console.log("Message type: "+dg.msgtype);
 	
-	if(this.whitelistEnabled && this.whitelist.indexOf(dg.msgtype) == -1) {
-		console.log("SECURITY: Admin attempted to send "+dg.msgtype);
+	if(dg.msgtype == PROXY_CONTROL_MSGTYPE) {
+		console.log("Control message");
 	} else {
-		this.socket.write(message);	
+		if(this.whitelistEnabled && this.whitelist.indexOf(dg.msgtype) == -1) {
+			console.log("SECURITY: Admin attempted to send "+dg.msgtype);
+		} else {
+			this.socket.write(message);	
+		}	
 	}
 		
 	if(dg.length + 2 < message.length) {
