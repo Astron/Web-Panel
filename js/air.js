@@ -115,6 +115,10 @@ AstronInternalRepository.prototype.message = function(dg) {
 		this.handleEnterObject(dg, ["broadcast"], false);
 	} else if(dg.msgtype == packets.STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED_OTHER) {
 		this.handleEnterObject(dg, ["broadcast"], true)
+	} else if(dg.msgtype == 1337) {
+		// proxy response
+		var resp = JSON.parse(dg.readString());
+		console.log(resp);
 	} else {
 		console.log("Unknown packet of msgtype "+dg.msgtype+" received");
 	}
