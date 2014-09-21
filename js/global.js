@@ -68,14 +68,42 @@ function generateInspector() {
 }
 
 function inspect(obj) {
+	console.log(obj);
 	inspectedObject = obj;
 	inspector.reset();
 	inspector.modifyTitle(getObjectName(obj));
-	inspector.addMap(obj.properties);
+	
+	var fields = obj.dclass[2];
+	var fieldMap = {};
+	for(var i = 0; i < fields.length; ++i) {
+		if(obj.properties[fields[i][1]]) {
+			fieldMap[fields[i][1]] = obj.properties[fields[i][1]];
+		} else {
+			var params = fields[i][3];
+			var autovals = [];
+			
+			for(var p = 0; p < params.length; ++p) {
+				autovals.push(getDefaultValue(params[p]));
+			}
+			
+			fieldMap[fields[i][1]] = autovals;
+		}
+	}
+	inspector.addMap(fieldMap);
 }
 
 function getObjectName(obj) {
 	return obj.dclass[1]+"("+obj.doId+")";
+}
+
+function getDefaultValue(type) {
+	if(/u?int(\d+)/.test(type)) {
+		return 0;
+	} else if(type == "string") {
+		return "";
+	} else {
+		console.log("Unknown default value for type: "+type);
+	}
 }
 
 window.addEventListener("load", startAdmin);
