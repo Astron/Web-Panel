@@ -18,15 +18,21 @@ var HierarchyGlobals = {
 function startAdmin() {
 	air = new AstronInternalRepository(DebugLevel.TRACE);
 	air.enterObjectCallback = addObjectToHierarchy;
+	air.authCallback = authResponse;
 	
 	air.connect("localhost", 8198, "simple_example.dc", function() {
 		// connected to Astron
-	
-		hierarchy = generateHierarchy();
-		hierarchy.balance();
-		
-		inspector = generateInspector();
+		document.getElementById("authstatus").innerHTML = "Connected to Astron! Waiting for login..";
 	});
+}
+
+function launchControlPanel() {
+	document.body.removeChild(document.getElementById("auth"));
+	
+	hierarchy = generateHierarchy();
+	hierarchy.balance();
+	
+	inspector = generateInspector();
 }
 
 function generateHierarchy() {
@@ -102,6 +108,21 @@ function getDefaultValue(type) {
 		return "";
 	} else {
 		console.log("Unknown default value for type: "+type);
+	}
+}
+
+function authenticate() {
+	var username = document.getElementById("username").value;
+	var password = document.getElementById("password").value;
+	
+	air.authenticate(username, password);
+}
+
+function authResponse(success) {
+	if(success) {
+		launchControlPanel();
+	} else {
+		document.getElementById("authstatus").innerHTML = "Incorrect username or password";
 	}
 }
 
