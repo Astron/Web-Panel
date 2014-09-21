@@ -6,7 +6,7 @@
 var net = require('net');
 var ws = require('ws');
 
-var Packet = require("./Packet");
+var Packet = require("./Packet"), OutPacket = require("./OutPacket");
 
 var PROXY_CONTROL_MSGTYPE = 1337;
 
@@ -45,6 +45,15 @@ Session.prototype.incomingMessage = function(message) {
 			if(o.type == "login") {
 				if(o.username == "root" && o.password == "toor") {
 					this.enableAll();
+					this.sendProxyResponse({
+						type: "login",
+						success: true
+					});
+				} else {
+					this.sendProxyResponse({
+						type: "login",
+						success: false
+					});	
 				}
 			}
 		} catch(e) {
@@ -79,6 +88,11 @@ Session.prototype.enableManipulation = function() {
 	this.whitelist.push(2020); // STATESERVER_OBJECT_SET_FIELD
 }
 
+Session.prototype.sendProxyResponse = function(resp) {
+	var resp = new OutPacket([1], PROXY_CONTROL_MSGTYPE);
+	resp.writeString(JSON.stringify(msg));
+	this.ws.send(resp.serialize())
+}
 
 var wss = new (ws.Server)({
 	port: 8198
