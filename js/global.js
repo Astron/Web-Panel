@@ -71,11 +71,11 @@ function inspect(obj) {
 	inspectedObject = obj;
 	inspector.reset();
 	inspector.modifyTitle(getObjectName(obj));
-	
+		
 	var fields = obj.dclass[2];
 	var fieldMap = {};
 	for(var i = 0; i < fields.length; ++i) {
-		if(obj.properties[fields[i][1]]) {
+		if(obj.properties[fields[i][1]] != undefined) {
 			fieldMap[fields[i][1]] = obj.properties[fields[i][1]];
 		} else {
 			var params = fields[i][3];
