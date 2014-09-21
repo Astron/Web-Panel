@@ -152,6 +152,21 @@ AstronInternalRepository.prototype.rpcResponse = function(context, parameters) {
 
 // packet serialization utilities
 
+AstronInternalRepository.prototype.proxyMessage = function(msg) {
+	var dg = new Datagram();
+	dg.writeControlHeader(1337);
+	dg.writeString(JSON.stringify(msg));
+	this.send(dg);
+}
+
+AstronInternalRepository.prototype.authenticate = function(username, password) {
+	this.proxyMessage({
+		type: "login",
+		username: username,
+		password: password
+	});
+}
+
 AstronInternalRepository.prototype.subscribeChannel = function(channel) {
 	var dg = new Datagram();
 	dg.writeControlHeader(9000);
