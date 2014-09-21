@@ -11,7 +11,7 @@ var Packet = require("./Packet");
 function Session(ws, astronPort) {
 	var that = this;
 	
-	this.whitelist = [9000, 2102, 2020];
+	this.whitelist = [];
 	this.whitelistEnabled = true;
 
 	this.socket = net.connect({
@@ -45,6 +45,22 @@ Session.prototype.incomingMessage = function(message) {
 	if(dg.length + 2 < message.length) {
 		this.incomingMessage(msg.slice(dg.length + 2));
 	}
+}
+
+Session.prototype.enableAll = function() {
+	this.whitelistEnabled = false;
+}
+
+Session.prototype.enableInternalProtocol = function() {
+	this.whitelist.push(9000); // CONTROL_ADD_CHANNEL
+}
+
+Session.prototype.enableInspection = function() {
+	this.whitelist.push(2102); // STATESERVER_OBJECT_GET_ZONES_OBJECTS
+}
+
+Session.prototype.enableManipulation = function() {
+	this.whitelist.push(2020); // STATESERVER_OBJECT_SET_FIELD
 }
 
 
