@@ -31,6 +31,7 @@ function AstronInternalRepository(debugLevel, dcFilePath) {
 	this.contextCounter = 0;
 	
 	this.enterObjectCallback = function(){};
+	this.authCallback = function(){};
 }
 
 AstronInternalRepository.prototype.connect = function(host, port, dcFile, connectedCallback) {
@@ -118,7 +119,13 @@ AstronInternalRepository.prototype.message = function(dg) {
 	} else if(dg.msgtype == 1337) {
 		// proxy response
 		var resp = JSON.parse(dg.readString());
-		console.log(resp);
+		
+		if(resp.type == "login") {
+			this.authCallback(resp.success);
+		} else {
+			console.log("Unknown proxy message: "+resp.type);
+			console.log(resp);
+		}
 	} else {
 		console.log("Unknown packet of msgtype "+dg.msgtype+" received");
 	}
