@@ -4,7 +4,7 @@ function OutPacket(){
 OutPacket.prototype.writeUInt8 = function(b){ this.buf.push(b & 0xFF); };
 OutPacket.prototype.writeUInt16 = function(b){ this.writeUInt8(b & 0xFF); this.writeUInt8((b >> 8) & 0xFF); };
 OutPacket.prototype.writeUInt32 = function(b){ this.writeUInt16(b & 0xFFFF); this.writeUInt16((b >> 16) & 0xFFFF); };
-OutPacket.prototype.writeUInt64 = function(b){ b = bignum(b);  this.writeUInt32(b.and(0xFFFFFFFF)); this.writeUInt32(b.shiftRight(32));  };
+OutPacket.prototype.writeUInt64 = function(b){ this.writeUInt32(b); this.writeUInt32(0); }; // FIXME: get a proper 64-bit implementation, if needed
 OutPacket.prototype.writeBlob = function(b,l){ var i = 0; while(i < l){ this.buf.push(b[i].charCodeAt(0)); ++i; }; };
 OutPacket.prototype.writeString = function(str){ this.writeUInt16(str.length); this.writeBlob(str,str.length);};
 

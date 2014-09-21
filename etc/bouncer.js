@@ -53,7 +53,7 @@ Session.prototype.incomingMessage = function(message) {
 					this.sendProxyResponse({
 						type: "login",
 						success: false
-					});	
+					});
 				}
 			}
 		} catch(e) {
@@ -89,8 +89,9 @@ Session.prototype.enableManipulation = function() {
 }
 
 Session.prototype.sendProxyResponse = function(resp) {
-	var resp = new OutPacket([1], PROXY_CONTROL_MSGTYPE);
-	resp.writeString(JSON.stringify(msg));
+	var resp = new OutPacket();
+	resp.writeMDHeader([PROXY_CONTROL_MSGTYPE], PROXY_CONTROL_MSGTYPE, PROXY_CONTROL_MSGTYPE);
+	resp.writeString(JSON.stringify(resp));
 	this.ws.send(resp.serialize())
 }
 
