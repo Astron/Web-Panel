@@ -39,8 +39,17 @@ Session.prototype.incomingMessage = function(message) {
 	console.log("Message type: "+dg.msgtype);
 	
 	if(dg.msgtype == PROXY_CONTROL_MSGTYPE) {
-		console.log("Control message");
-		console.log(JSON.parse(dg.readString()));
+		try {
+			var o = JSON.parse(dg.readString());
+			
+			if(o.type == "login") {
+				if(o.username == "root" && o.password == "toor") {
+					this.enableAll();
+				}
+			}
+		} catch(e) {
+			console.error(e);
+		}
 	} else {
 		if(this.whitelistEnabled && this.whitelist.indexOf(dg.msgtype) == -1) {
 			console.log("SECURITY: Admin attempted to send "+dg.msgtype);
