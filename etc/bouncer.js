@@ -26,6 +26,9 @@ function Session(ws, astronPort) {
 	this.ws.on('message', function(message) {
 		that.incomingMessage(message);
 	});
+	this.ws.on('close', function() {
+		that.socket.end();
+	})
 	
 	this.socket.on('data', function(d) {
 		that.ws.send(d, {binary: true});
