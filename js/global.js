@@ -68,7 +68,7 @@ function addObjectToHierarchy(obj) {
 }
 
 function generateInspector() {
-	return new Table("Inspector", this.hasManipulation ? function(key, val) {
+	return new Table("Inspector", hasManipulation ? function(key, val) {
 		air.setField(inspectedObject, key, val);
 	} : null);
 }
@@ -120,7 +120,8 @@ function authenticate() {
 
 function authResponse(success, permissions) {
 	if(success) {
-		this.hasManipulation = permissions.hasManipulation;
+		hasManipulation = permissions.hasManipulation;
+		console.log(this);
 		launchControlPanel();
 	} else {
 		document.getElementById("authstatus").innerHTML = "Incorrect username or password";
