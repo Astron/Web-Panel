@@ -22,7 +22,7 @@ function startAdmin() {
 	
 	air.connect("localhost", 8198, "simple_example.dc", function() {
 		// connected to Astron
-		document.getElementById("authstatus").innerHTML = "Connected to Astron! Waiting for login..";
+		document.getElementById("authstatus").style.display = "none";
 	});
 }
 
@@ -125,6 +125,8 @@ function authResponse(success, permissions) {
 		launchControlPanel();
 	} else {
 		document.getElementById("authstatus").innerHTML = "Incorrect username or password";
+		document.getElementById("authstatus").style.color = "red";
+		document.getElementById("authstatus").style.display = "block";
 	}
 }
 
