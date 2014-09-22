@@ -120,7 +120,7 @@ AstronInternalRepository.prototype.message = function(dg) {
 		if(resp.type == "login") {
 			this.subscribeChannel(this.airId);
 			
-			this.authCallback(resp.success);
+			this.authCallback(resp.success, resp);
 		} else {
 			console.log("Unknown proxy message: "+resp.type);
 			console.log(resp);

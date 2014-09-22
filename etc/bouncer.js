@@ -48,7 +48,8 @@ Session.prototype.incomingMessage = function(message) {
 					
 					this.sendProxyResponse({
 						type: "login",
-						success: true
+						success: true,
+						hasManipulation: accounts.accounts[o.username].permissions.manipulation
 					});
 				} else {
 					this.sendProxyResponse({
