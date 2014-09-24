@@ -69,6 +69,10 @@ function addObjectToHierarchy(obj) {
 
 function generateInspector() {
 	return new Table("Inspector", hasManipulation ? function(key, val) {
+		if(val[val.length-1].indexOf("<br>") > -1) {
+			val[val.length-1] = val[val.length-1].slice(0, -4);
+		}
+		
 		air.setField(inspectedObject, key, val);
 	} : null);
 }
