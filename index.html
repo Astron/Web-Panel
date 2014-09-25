@@ -12,7 +12,14 @@
 </head>
 <body>
 	<h1>Astron Control Panel</h1> <br/>
-	<i>Currently underconstruction</i>
+
+	<div id="auth">
+		<span id="authstatus" style="color: orange">Connecting to Astron...</span> <br/>
+		Username: <input type="text" id="username" /></br>
+		Password: <input type="password" id="password" /></br>
+		<button onclick="authenticate()" id="loginBtn">Login</button> <br/>
+	</div>
+
 	<div id="gui">
 		
 	</div>

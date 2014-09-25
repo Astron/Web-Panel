@@ -31,6 +31,7 @@ function AstronInternalRepository(debugLevel, dcFilePath) {
 	this.contextCounter = 0;
 	
 	this.enterObjectCallback = function(){};
+	this.authCallback = function(){};
 }
 
 AstronInternalRepository.prototype.connect = function(host, port, dcFile, connectedCallback) {
@@ -81,10 +82,7 @@ AstronInternalRepository.prototype.incomingMessage = function(msg) {
 AstronInternalRepository.prototype.connected = function(e) {
 	this.isConnected = true;
 	this.log(DebugLevel.INFO, "Connected to Astron");
-	this.airId = 1337;
-	
-	this.subscribeChannel(this.airId);
-	
+	this.airId = 1337;	
 	
 }
 
@@ -115,6 +113,18 @@ AstronInternalRepository.prototype.message = function(dg) {
 		this.handleEnterObject(dg, ["broadcast"], false);
 	} else if(dg.msgtype == packets.STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED_OTHER) {
 		this.handleEnterObject(dg, ["broadcast"], true)
+	} else if(dg.msgtype == 1337) {
+		// proxy response
+		var resp = JSON.parse(dg.readString());
+		
+		if(resp.type == "login") {
+			this.subscribeChannel(this.airId);
+			
+			this.authCallback(resp.success, resp);
+		} else {
+			console.log("Unknown proxy message: "+resp.type);
+			console.log(resp);
+		}
 	} else {
 		console.log("Unknown packet of msgtype "+dg.msgtype+" received");
 	}
@@ -151,6 +161,21 @@ AstronInternalRepository.prototype.rpcResponse = function(context, parameters) {
 }
 
 // packet serialization utilities
+
+AstronInternalRepository.prototype.proxyMessage = function(msg) {
+	var dg = new Datagram();
+	dg.writeControlHeader(1337);
+	dg.writeString(JSON.stringify(msg));
+	this.send(dg);
+}
+
+AstronInternalRepository.prototype.authenticate = function(username, password) {
+	this.proxyMessage({
+		type: "login",
+		username: username,
+		password: password
+	});
+}
 
 AstronInternalRepository.prototype.subscribeChannel = function(channel) {
 	var dg = new Datagram();

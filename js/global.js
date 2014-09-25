@@ -18,15 +18,21 @@ var HierarchyGlobals = {
 function startAdmin() {
 	air = new AstronInternalRepository(DebugLevel.TRACE);
 	air.enterObjectCallback = addObjectToHierarchy;
+	air.authCallback = authResponse;
 	
 	air.connect("localhost", 8198, "simple_example.dc", function() {
 		// connected to Astron
-	
-		hierarchy = generateHierarchy();
-		hierarchy.balance();
-		
-		inspector = generateInspector();
+		document.getElementById("authstatus").style.display = "none";
 	});
+}
+
+function launchControlPanel() {
+	document.body.removeChild(document.getElementById("auth"));
+	
+	hierarchy = generateHierarchy();
+	hierarchy.balance();
+	
+	inspector = generateInspector();
 }
 
 function generateHierarchy() {
@@ -62,9 +68,13 @@ function addObjectToHierarchy(obj) {
 }
 
 function generateInspector() {
-	return new Table("Inspector", function(key, val) {
+	return new Table("Inspector", hasManipulation ? function(key, val) {
+		if(val[val.length-1].indexOf("<br>") > -1) {
+			val[val.length-1] = val[val.length-1].slice(0, -4);
+		}
+		
 		air.setField(inspectedObject, key, val);
-	});
+	} : null);
 }
 
 function inspect(obj) {
@@ -102,6 +112,25 @@ function getDefaultValue(type) {
 		return "";
 	} else {
 		console.log("Unknown default value for type: "+type);
+	}
+}
+
+function authenticate() {
+	var username = document.getElementById("username").value;
+	var password = document.getElementById("password").value;
+	
+	air.authenticate(username, password);
+}
+
+function authResponse(success, permissions) {
+	if(success) {
+		hasManipulation = permissions.hasManipulation;
+		console.log(this);
+		launchControlPanel();
+	} else {
+		document.getElementById("authstatus").innerHTML = "Incorrect username or password";
+		document.getElementById("authstatus").style.color = "red";
+		document.getElementById("authstatus").style.display = "block";
 	}
 }
 
