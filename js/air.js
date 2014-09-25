@@ -130,9 +130,9 @@ AstronInternalRepository.prototype.message = function(dg) {
 	} else if(dg.msgtype == packets.STATESERVER_GET_ACTIVE_ZONES_RESP) {
 		var context = dg.readUInt32();
 		var zone_count = dg.readUInt16();
-		
+				
 		var zones = [];
-		for(var i = 0; i < zones.length; ++i) {
+		for(var i = 0; i < zone_count; ++i) {
 			zones.push(dg.readUInt32());
 		}
 		
