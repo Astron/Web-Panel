@@ -7,7 +7,7 @@ var air, hierarchy, inspector, inspectedObject;
 var HierarchyGlobals = {
 	root: 10000,
 	
-	zoneNodes: {
+	objectZoneNodes: {
 		
 	}
 }
@@ -42,7 +42,7 @@ function generateHierarchy() {
 }
 
 function refreshZone(parent, zone) {
-	HierarchyGlobals.zoneNodes[zone].removeChildren();
+	HierarchyGlobals.objectZoneNodes[parent][zone].removeChildren();
 	
 	air.getZonesObjects(function(numObjects) {
 		//alert(numObjects+" object(s) in zone "+zone);
@@ -51,18 +51,20 @@ function refreshZone(parent, zone) {
 
 function addObjectToHierarchy(obj) {
 	var name = getObjectName(obj);
-	new HierarchyNode(HierarchyGlobals.zoneNodes[obj.location.zone], name, "circle", function() {
+	new HierarchyNode(HierarchyGlobals.objectZoneNodes[obj.location.parent][obj.location.zone], name, "circle", function() {
 		air.getZones(zonesDiscovered, obj.doId);
 		inspect(obj);
 	}, HierarchyGlobals.context);
 	hierarchy.balance();
 }
 
-function zonesDiscovered(zones) {
+function zonesDiscovered(parent, zones) {
 	for(var i = 0; i < zones.length; ++i) {
 		var zone = zones[i];
 	
-		HierarchyGlobals.zoneNodes[zone] =
+		if(!HierarchyGlobals.objectZoneNodes[parent]) HierarchyGlobals.objectZOneNodes[parent] = {};
+	
+		HierarchyGlobals.objectZoneNodes[parent][zone] =
 			 new HierarchyNode(newHierarchy.rootNode, zones[i], "diamond", function() {
 				 refreshZone(HierarchyGlobals.root, zone);
 			 }, HierarchyGlobals.context);
