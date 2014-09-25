@@ -36,18 +36,7 @@ function generateHierarchy() {
 	HierarchyGlobals.context = GUI.newRootContext(GUI.location(350, 100));
 	var newHierarchy = new Hierarchy(HierarchyGlobals.context);
 	
-	air.getZones(function(zones) {
-		for(var i = 0; i < zones.length; ++i) {
-			var zone = zones[i];
-		
-			HierarchyGlobals.zoneNodes[zone] =
-				 new HierarchyNode(newHierarchy.rootNode, zones[i], "diamond", function() {
-					 refreshZone(HierarchyGlobals.root, zone);
-				 }, HierarchyGlobals.context);
-		}
-		
-		hierarchy.balance();
-	}, HierarchyGlobals.root);
+	air.getZones(zonesDiscovered, HierarchyGlobals.root);
 	
 	return newHierarchy;
 }
@@ -65,6 +54,19 @@ function addObjectToHierarchy(obj) {
 	new HierarchyNode(HierarchyGlobals.zoneNodes[obj.location.zone], name, "circle", function() {
 		inspect(obj);
 	}, HierarchyGlobals.context);
+	hierarchy.balance();
+}
+
+function zonesDiscovered(zones) {
+	for(var i = 0; i < zones.length; ++i) {
+		var zone = zones[i];
+	
+		HierarchyGlobals.zoneNodes[zone] =
+			 new HierarchyNode(newHierarchy.rootNode, zones[i], "diamond", function() {
+				 refreshZone(HierarchyGlobals.root, zone);
+			 }, HierarchyGlobals.context);
+	}
+	
 	hierarchy.balance();
 }
 
