@@ -6,9 +6,6 @@ var air, hierarchy, inspector, inspectedObject;
 
 var HierarchyGlobals = {
 	root: 10000,
-	zones: [
-		0
-	],
 	
 	zoneNodes: {
 		
@@ -39,14 +36,18 @@ function generateHierarchy() {
 	HierarchyGlobals.context = GUI.newRootContext(GUI.location(350, 100));
 	var newHierarchy = new Hierarchy(HierarchyGlobals.context);
 	
-	for(var i = 0; i < HierarchyGlobals.zones.length; ++i) {
-		var zone = HierarchyGlobals.zones[i];
+	air.getZones(function(zones) {
+		for(var i = 0; i < zones.length; ++i) {
+			var zone = zones[i];
 		
-		HierarchyGlobals.zoneNodes[zone] =
-			 new HierarchyNode(newHierarchy.rootNode, HierarchyGlobals.zones[i], "diamond", function() {
-				 refreshZone(HierarchyGlobals.root, zone);
-			 }, HierarchyGlobals.context);
-	}
+			HierarchyGlobals.zoneNodes[zone] =
+				 new HierarchyNode(newHierarchy.rootNode, zones[i], "diamond", function() {
+					 refreshZone(HierarchyGlobals.root, zone);
+				 }, HierarchyGlobals.context);
+		}
+		
+		hierarchy.balance();
+	}, HierarchyGlobals.root);
 	
 	return newHierarchy;
 }
