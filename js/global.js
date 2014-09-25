@@ -114,10 +114,11 @@ function getDefaultValue(type) {
 
 function authenticate() {
 	var host = document.getElementById("host").value;
+	var port = document.getElementById("port").value;
 	var username = document.getElementById("username").value;
 	var password = document.getElementById("password").value;
 	
-	air.connect(host, 8198, "simple_example.dc", function() {
+	air.connect(host, port, "simple_example.dc", function() {
 		// connected to Astron
 		air.authenticate(username, password);
 	});	
