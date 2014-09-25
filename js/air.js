@@ -14,7 +14,9 @@ var packets = {
 	STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED: 2042,
 	STATESERVER_OBJECT_ENTER_LOCATION_WITH_REQUIRED_OTHER: 2043,
 	STATESERVER_OBJECT_GET_ALL: 2014,
-	STATESERVER_OBJECT_GET_ALL_RESP: 2015
+	STATESERVER_OBJECT_GET_ALL_RESP: 2015,
+	STATESERVER_GET_ACTIVE_ZONES: 2125,
+	STATESERVER_GET_ACTIVE_ZONES_RESP: 2126
 };
 
 function AstronInternalRepository(debugLevel, dcFilePath) {
@@ -125,6 +127,16 @@ AstronInternalRepository.prototype.message = function(dg) {
 			console.log("Unknown proxy message: "+resp.type);
 			console.log(resp);
 		}
+	} else if(dg.msgtype == packets.STATESERVER_GET_ACTIVE_ZONES_RESP) {
+		var context = dg.readUInt32();
+		var zone_count = dg.readUInt16();
+		
+		var zones = [];
+		for(var i = 0; i < zones.length; ++i) {
+			zones.push(dg.readUInt32());
+		}
+		
+		this.rpcResponse(context, [zones]);
 	} else {
 		console.log("Unknown packet of msgtype "+dg.msgtype+" received");
 	}
@@ -188,6 +200,13 @@ AstronInternalRepository.prototype.setConName = function(name) {
 	var dg = new Datagram();
 	dg.writeControlHeader(9012);
 	dg.writeString(name);
+	this.send(dg);
+}
+
+AstronInternalRepository.prototype.getZones = function(context, t_parent) {
+	var dg = new Datagram();
+	dg.writeInternalHeader([t_parent], packets.STATESERVER_GET_ACTIVE_ZONES, this.airId);
+	dg.writeContext(this, context);
 	this.send(dg);
 }
 
