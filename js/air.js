@@ -136,7 +136,7 @@ AstronInternalRepository.prototype.message = function(dg) {
 			zones.push(dg.readUInt32());
 		}
 		
-		this.rpcResponse(context, [zones]);
+		this.rpcResponse(context, [dg.sender, zones]);
 	} else {
 		console.log("Unknown packet of msgtype "+dg.msgtype+" received");
 	}
