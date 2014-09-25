@@ -16,6 +16,8 @@ var HierarchyGlobals = {
 }
 
 function startAdmin() {
+	document.getElementById('host').value = location.host || "127.0.0.1";
+	
 	air = new AstronInternalRepository(DebugLevel.TRACE);
 	air.enterObjectCallback = addObjectToHierarchy;
 	air.authCallback = authResponse;
@@ -124,7 +126,6 @@ function authenticate() {
 function authResponse(success, permissions) {
 	if(success) {
 		hasManipulation = permissions.hasManipulation;
-		console.log(this);
 		launchControlPanel();
 	} else {
 		document.getElementById("authstatus").innerHTML = "Incorrect username or password";
