@@ -52,6 +52,7 @@ function refreshZone(parent, zone) {
 function addObjectToHierarchy(obj) {
 	var name = getObjectName(obj);
 	new HierarchyNode(HierarchyGlobals.zoneNodes[obj.location.zone], name, "circle", function() {
+		air.getZones(zonesDiscovered, obj.doId);
 		inspect(obj);
 	}, HierarchyGlobals.context);
 	hierarchy.balance();
