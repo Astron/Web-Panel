@@ -16,14 +16,11 @@ var HierarchyGlobals = {
 }
 
 function startAdmin() {
+	document.getElementById('host').value = location.host || "127.0.0.1";
+	
 	air = new AstronInternalRepository(DebugLevel.TRACE);
 	air.enterObjectCallback = addObjectToHierarchy;
 	air.authCallback = authResponse;
-	
-	air.connect("localhost", 8198, "simple_example.dc", function() {
-		// connected to Astron
-		document.getElementById("authstatus").style.display = "none";
-	});
 }
 
 function launchControlPanel() {
@@ -116,16 +113,20 @@ function getDefaultValue(type) {
 }
 
 function authenticate() {
+	var host = document.getElementById("host").value;
+	var port = document.getElementById("port").value;
 	var username = document.getElementById("username").value;
 	var password = document.getElementById("password").value;
 	
-	air.authenticate(username, password);
+	air.connect(host, port, "simple_example.dc", function() {
+		// connected to Astron
+		air.authenticate(username, password);
+	});	
 }
 
 function authResponse(success, permissions) {
 	if(success) {
 		hasManipulation = permissions.hasManipulation;
-		console.log(this);
 		launchControlPanel();
 	} else {
 		document.getElementById("authstatus").innerHTML = "Incorrect username or password";
