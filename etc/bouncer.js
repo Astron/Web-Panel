@@ -5,6 +5,9 @@
 
 var net = require('net');
 var ws = require('ws');
+var http = require('http');
+var fs = require('fs');
+var mime = require('mime');
 
 var Packet = require("./Packet"), OutPacket = require("./OutPacket");
 
@@ -24,6 +27,7 @@ function Session(ws, astronPort) {
 	
 	this.ws = ws;
 	this.ws.on('message', function(message) {
+		console.log(typeof message);
 		that.incomingMessage(message);
 	});
 	this.ws.on('close', function() {
@@ -148,3 +152,16 @@ wss.on('connection', function(ws) {
 
 var accounts = new AccountManager();
 accounts.addAccount("root", new Account("toor", new Permissions(false, true, true, true)));
+
+var whitelistedURL = ["/css/global.css", "/js/Datagram.js", "/js/dcparser.js", "/js/gui.js", "/js/air.js", "/js/global.js", "/js/serializeToken.js", "/index.html", "/simple_example.dc"];
+
+http.createServer(function(req, res) {
+	if(whitelistedURL.indexOf(req.url) > -1) {
+		fs.readFile('..'+req.url, function(err, data) {
+			res.writeHeader(200, {"Content-Type": mime.lookup(req.url)})
+			res.end(data);
+		})
+	} else {
+		console.log("Security: "+req.url);
+	}
+}).listen(8080);
