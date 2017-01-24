@@ -91,6 +91,7 @@ Session.prototype.enableInternalProtocol = function() {
 
 Session.prototype.enableInspection = function() {
 	this.whitelist.push(2102); // STATESERVER_OBJECT_GET_ZONES_OBJECTS
+	this.whitelist.push(2125); // STATESERVER_GET_ACTIVE_ZONES
 }
 
 Session.prototype.enableManipulation = function() {

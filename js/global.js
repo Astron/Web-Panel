@@ -6,11 +6,12 @@ var air, hierarchy, inspector, inspectedObject;
 
 var HierarchyGlobals = {
 	root: 10000,
-	zones: [
-		0
-	],
 	
-	zoneNodes: {
+	objectZoneNodes: {
+		
+	},
+	
+	objectNodes: {
 		
 	}
 }
@@ -36,20 +37,15 @@ function generateHierarchy() {
 	HierarchyGlobals.context = GUI.newRootContext(GUI.location(350, 100));
 	var newHierarchy = new Hierarchy(HierarchyGlobals.context);
 	
-	for(var i = 0; i < HierarchyGlobals.zones.length; ++i) {
-		var zone = HierarchyGlobals.zones[i];
-		
-		HierarchyGlobals.zoneNodes[zone] =
-			 new HierarchyNode(newHierarchy.rootNode, HierarchyGlobals.zones[i], "diamond", function() {
-				 refreshZone(HierarchyGlobals.root, zone);
-			 }, HierarchyGlobals.context);
-	}
+	HierarchyGlobals.objectNodes[HierarchyGlobals.root] = newHierarchy.rootNode;
+	
+	air.getZones(zonesDiscovered, HierarchyGlobals.root);
 	
 	return newHierarchy;
 }
 
-function refreshZone(parent, zone) {
-	HierarchyGlobals.zoneNodes[zone].removeChildren();
+function refreshZone(parent, zone) {	
+	HierarchyGlobals.objectZoneNodes[parent.toString()][zone].removeChildren();
 	
 	air.getZonesObjects(function(numObjects) {
 		//alert(numObjects+" object(s) in zone "+zone);
@@ -58,9 +54,28 @@ function refreshZone(parent, zone) {
 
 function addObjectToHierarchy(obj) {
 	var name = getObjectName(obj);
-	new HierarchyNode(HierarchyGlobals.zoneNodes[obj.location.zone], name, "circle", function() {
-		inspect(obj);
-	}, HierarchyGlobals.context);
+	HierarchyGlobals.objectNodes[obj.doid] = 
+		new HierarchyNode(HierarchyGlobals.objectZoneNodes[obj.location.parent.toString()][obj.location.zone], name, "circle", function() {
+			air.getZones(zonesDiscovered, obj.doId);
+			inspect(obj);
+		}, HierarchyGlobals.context);
+	hierarchy.balance();
+}
+
+function zonesDiscovered(parent, zones) {
+	for(var i = 0; i < zones.length; ++i) {
+		var zone = zones[i];
+	
+		if(!HierarchyGlobals.objectZoneNodes[parent.toString()]) HierarchyGlobals.objectZoneNodes[parent.toString()] = {};
+		
+		console.log(parent);
+		
+		HierarchyGlobals.objectZoneNodes[parent.toString()][zone] =
+			 new HierarchyNode(HierarchyGlobals.objectNodes[parent.toString()], zones[i], "diamond", function() {
+				 refreshZone(parent, zone);
+			 }, HierarchyGlobals.context);
+	}
+	
 	hierarchy.balance();
 }
 

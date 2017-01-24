@@ -194,6 +194,10 @@ UInt64.prototype.equals = function(other) {
 	return (this.low == other.low) && (this.high == other.high);
 }
 
+UInt64.prototype.toString = function() {
+	return this.low+","+this.high;
+}
+
 // utility functions for converting JavaScript integers to their two's complement representation
 function signNetToJS(bits, num) {
 	if(bits == 8 || bits == 16) {
